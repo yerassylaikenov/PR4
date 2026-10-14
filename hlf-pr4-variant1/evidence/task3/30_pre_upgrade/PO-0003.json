@@ -1,0 +1,15 @@
+{
+  "amount": 75000000,
+  "createdAt": "2026-10-14T06:14:45Z",
+  "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+  "currency": "KZT",
+  "docType": "PaymentOrder",
+  "id": "PO-0003",
+  "lastTxId": "43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67",
+  "purposeCode": "342",
+  "receiverBankMSP": "Org2MSP",
+  "reference": "Возврат займа по договору 15-К",
+  "senderBankMSP": "Org1MSP",
+  "status": "CREATED",
+  "updatedAt": "2026-10-14T06:14:45Z"
+}

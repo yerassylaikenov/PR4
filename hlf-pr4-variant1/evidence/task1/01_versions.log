@@ -1,0 +1,280 @@
+# command : ./scripts/01_install_fabric.sh 
+# date    : 2026-10-14 10:27:46 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task1/01_versions.log
+
+━━━━ Шаг 2. Определение последних версий через GitHub Releases API ━━━━
+  ✔ Fabric 3.1.x latest: 3.1.5
+  ✔ Fabric CA 1.5.x latest: 1.5.22
+
+━━━━ Установка: install-fabric.sh docker samples binary ━━━━
+
+Clone hyperledger/fabric-samples repo
+
+===> Cloning hyperledger/fabric-samples repo
+Cloning into 'fabric-samples'...
+fabric-samples v3.1.5 does not exist, defaulting to main. fabric-samples main branch is intended to work with recent versions of fabric.
+
+Pull Hyperledger Fabric binaries
+
+===> Downloading version 3.1.5 platform specific fabric binaries
+===> Downloading:  https://github.com/hyperledger/fabric/releases/download/v3.1.5/hyperledger-fabric-linux-amd64-3.1.5.tar.gz
+===> Will unpack to: /home/yeras/hlf-pr4-variant1/fabric-samples
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  3  118M    3 3661k    0     0  1854k      0  0:01:05  0:00:01  0:01:04 3984k  7  118M    7 8717k    0     0  2882k      0  0:00:42  0:00:03  0:00:39 4427k 14  118M   14 16.8M    0     0  4339k      0  0:00:28  0:00:03  0:00:25 5908k 21  118M   21 25.8M    0     0  5199k      0  0:00:23  0:00:05  0:00:18 6562k 29  118M   29 34.9M    0     0  5988k      0  0:00:20  0:00:05  0:00:15 7273k 38  118M   38 46.1M    0     0  6767k      0  0:00:17  0:00:06  0:00:11 8708k 48  118M   48 57.2M    0     0  7351k      0  0:00:16  0:00:07  0:00:09  9.8M 56  118M   56 67.5M    0     0  7707k      0  0:00:15  0:00:08  0:00:07 10.1M 66  118M   66 79.2M    0     0  8138k      0  0:00:14  0:00:09  0:00:05 10.9M 76  118M   76 91.0M    0     0  8491k      0  0:00:14  0:00:10  0:00:04 11.2M 86  118M   86  102M    0     0  8743k      0  0:00:13  0:00:11  0:00:02 11.2M 94  118M   94  112M    0     0  8913k      0  0:00:13  0:00:12  0:00:01 11.1M 98  118M   98  117M    0     0  8613k      0  0:00:14  0:00:13  0:00:01  9.9M100  118M  100  118M    0     0  8403k      0  0:00:14  0:00:14 --:--:-- 8989k
+==> Done.
+===> Downloading version 1.5.22 platform specific fabric-ca-client binary
+===> Downloading:  https://github.com/hyperledger/fabric-ca/releases/download/v1.5.22/hyperledger-fabric-ca-linux-amd64-1.5.22.tar.gz
+===> Will unpack to: /home/yeras/hlf-pr4-variant1/fabric-samples
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 32.8M    0  111k    0     0  76990      0  0:07:27  0:00:01  0:07:26 76990  5 32.8M    5 1711k    0     0   691k      0  0:00:48  0:00:02  0:00:46 1608k 12 32.8M   12 4175k    0     0  1204k      0  0:00:27  0:00:03  0:00:24 2044k 22 32.8M   22 7439k    0     0  1663k      0  0:00:20  0:00:04  0:00:16 2449k 36 32.8M   36 11.9M    0     0  2229k      0  0:00:15  0:00:05  0:00:10 3027k 58 32.8M   58 19.2M    0     0  3040k      0  0:00:11  0:00:06  0:00:05 3919k 93 32.8M   93 30.7M    0     0  4212k      0  0:00:07  0:00:07 --:--:-- 5952k100 32.8M  100 32.8M    0     0  4420k      0  0:00:07  0:00:07 --:--:-- 7105k
+==> Done.
+
+Pull Hyperledger Fabric docker images
+
+FABRIC_IMAGES: peer orderer ccenv baseos
+===> Pulling fabric Images
+====>  ghcr.io/hyperledger/fabric-peer:3.1.5
+3.1.5: Pulling from hyperledger/fabric-peer
+2581844863c9: Pulling fs layer
+5395842203d4: Pulling fs layer
+cb259a83ac3d: Pulling fs layer
+40491db1eeac: Pulling fs layer
+9abb14b5db6b: Pulling fs layer
+c10afc68e3a1: Download complete
+5395842203d4: Download complete
+9abb14b5db6b: Download complete
+2581844863c9: Download complete
+40491db1eeac: Download complete
+cb259a83ac3d: Download complete
+5395842203d4: Pull complete
+cb259a83ac3d: Pull complete
+40491db1eeac: Pull complete
+9abb14b5db6b: Pull complete
+2581844863c9: Pull complete
+Digest: sha256:db65e6f6698e251c92041935598f539cbab35d7624e433c9637c073e68cdd2e3
+Status: Downloaded newer image for ghcr.io/hyperledger/fabric-peer:3.1.5
+ghcr.io/hyperledger/fabric-peer:3.1.5
+====>  ghcr.io/hyperledger/fabric-orderer:3.1.5
+3.1.5: Pulling from hyperledger/fabric-orderer
+260573e42136: Pulling fs layer
+426785df6322: Pulling fs layer
+35e52eb8c87f: Pulling fs layer
+fd35d7cd4b35: Pulling fs layer
+6183a650e5aa: Download complete
+260573e42136: Download complete
+35e52eb8c87f: Download complete
+fd35d7cd4b35: Download complete
+fd35d7cd4b35: Pull complete
+426785df6322: Download complete
+260573e42136: Pull complete
+35e52eb8c87f: Pull complete
+426785df6322: Pull complete
+Digest: sha256:9d15017ba215b186a1401079e9aa68723e2d993fd366c4f2b0c8381b008fe2f7
+Status: Downloaded newer image for ghcr.io/hyperledger/fabric-orderer:3.1.5
+ghcr.io/hyperledger/fabric-orderer:3.1.5
+====>  ghcr.io/hyperledger/fabric-ccenv:3.1.5
+3.1.5: Pulling from hyperledger/fabric-ccenv
+a3466d708b74: Pulling fs layer
+11f55ef5b647: Pulling fs layer
+df7f49d1c653: Pulling fs layer
+7f85cd95d024: Pulling fs layer
+8f4fdbfcef86: Pulling fs layer
+7a968f5c8604: Pulling fs layer
+2a705c2bc3b7: Download complete
+7a968f5c8604: Download complete
+a3466d708b74: Download complete
+8f4fdbfcef86: Download complete
+11f55ef5b647: Download complete
+7f85cd95d024: Download complete
+df7f49d1c653: Download complete
+df7f49d1c653: Pull complete
+8f4fdbfcef86: Pull complete
+11f55ef5b647: Pull complete
+7f85cd95d024: Pull complete
+7a968f5c8604: Pull complete
+a3466d708b74: Pull complete
+Digest: sha256:274c7d10872ddbf161ad7b08c06eb3eafbfe336531a606f5af7a90a5d2f6af88
+Status: Downloaded newer image for ghcr.io/hyperledger/fabric-ccenv:3.1.5
+ghcr.io/hyperledger/fabric-ccenv:3.1.5
+====>  ghcr.io/hyperledger/fabric-baseos:3.1.5
+3.1.5: Pulling from hyperledger/fabric-baseos
+0cb442e29ccb: Pulling fs layer
+f4d56722d578: Pulling fs layer
+8ac135c49520: Pulling fs layer
+b7dd95293568: Download complete
+8ac135c49520: Download complete
+0cb442e29ccb: Download complete
+f4d56722d578: Download complete
+8ac135c49520: Pull complete
+f4d56722d578: Pull complete
+0cb442e29ccb: Pull complete
+Digest: sha256:9673173d2bbf7aac4ba9257f3bb9534ae07bcbc461a9bf047af7e51fb902e100
+Status: Downloaded newer image for ghcr.io/hyperledger/fabric-baseos:3.1.5
+ghcr.io/hyperledger/fabric-baseos:3.1.5
+===> Pulling fabric ca Image
+====>  ghcr.io/hyperledger/fabric-ca:1.5.22
+1.5.22: Pulling from hyperledger/fabric-ca
+80a42b291504: Pulling fs layer
+47e9f7a635d4: Pulling fs layer
+35adee45aeb0: Pulling fs layer
+d6834b4a794c: Pulling fs layer
+90f893adcb83: Download complete
+35adee45aeb0: Download complete
+d6834b4a794c: Download complete
+80a42b291504: Download complete
+d6834b4a794c: Pull complete
+47e9f7a635d4: Download complete
+47e9f7a635d4: Pull complete
+35adee45aeb0: Pull complete
+80a42b291504: Pull complete
+Digest: sha256:87c36f0b655838e2c3b00379cafc6efb36dc6f8d88b2cec9c707fd47e93b1c63
+Status: Downloaded newer image for ghcr.io/hyperledger/fabric-ca:1.5.22
+ghcr.io/hyperledger/fabric-ca:1.5.22
+===> List out hyperledger images
+ghcr.io/hyperledger/fabric-baseos:3.1.0    baba94b44d75        229MB         72.1MB        
+ghcr.io/hyperledger/fabric-baseos:3.1.5    9673173d2bbf        208MB           66MB        
+ghcr.io/hyperledger/fabric-ca:1.5.15       4704861f82be        351MB          112MB        
+ghcr.io/hyperledger/fabric-ca:1.5.22       87c36f0b6558        398MB          129MB        
+ghcr.io/hyperledger/fabric-ccenv:3.1.0     267903004dd7       1.03GB          263MB        
+ghcr.io/hyperledger/fabric-ccenv:3.1.5     274c7d10872d       1.04GB          259MB        
+ghcr.io/hyperledger/fabric-orderer:3.1.5   9d15017ba215        179MB         49.6MB        
+ghcr.io/hyperledger/fabric-peer:3.1.0      1a352112690a        222MB         63.1MB        
+ghcr.io/hyperledger/fabric-peer:3.1.5      db65e6f6698e        228MB         64.8MB        
+hyperledger/fabric-baseos:3.1              9673173d2bbf        208MB           66MB        
+hyperledger/fabric-baseos:3.1.0            baba94b44d75        229MB         72.1MB        
+hyperledger/fabric-baseos:3.1.5            9673173d2bbf        208MB           66MB        
+hyperledger/fabric-baseos:latest           9673173d2bbf        208MB           66MB        
+hyperledger/fabric-ca:1.5                  87c36f0b6558        398MB          129MB        
+hyperledger/fabric-ca:1.5.15               4704861f82be        351MB          112MB        
+hyperledger/fabric-ca:1.5.22               87c36f0b6558        398MB          129MB        
+hyperledger/fabric-ca:latest               87c36f0b6558        398MB          129MB        
+hyperledger/fabric-ccenv:3.1               274c7d10872d       1.04GB          259MB        
+hyperledger/fabric-ccenv:3.1.0             267903004dd7       1.03GB          263MB        
+hyperledger/fabric-ccenv:3.1.5             274c7d10872d       1.04GB          259MB        
+hyperledger/fabric-ccenv:latest            274c7d10872d       1.04GB          259MB        
+hyperledger/fabric-orderer:3.1             9d15017ba215        179MB         49.6MB        
+hyperledger/fabric-orderer:3.1.0           41856f6a38ad        175MB         48.5MB        
+hyperledger/fabric-orderer:3.1.5           9d15017ba215        179MB         49.6MB        
+hyperledger/fabric-orderer:latest          9d15017ba215        179MB         49.6MB        
+hyperledger/fabric-peer:3.1                db65e6f6698e        228MB         64.8MB        
+hyperledger/fabric-peer:3.1.0              1a352112690a        222MB         63.1MB        
+hyperledger/fabric-peer:3.1.5              db65e6f6698e        228MB         64.8MB        
+hyperledger/fabric-peer:latest             db65e6f6698e        228MB         64.8MB        
+
+━━━━ Проверка версий ━━━━
+$ peer version
+peer:
+ Version: v3.1.5
+ Commit SHA: 86c1172
+ Go version: go1.26.4
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+
+$ orderer version
+orderer:
+ Version: v3.1.5
+ Commit SHA: 86c1172
+ Go version: go1.26.4
+ OS/Arch: linux/amd64
+
+$ fabric-ca-client version
+fabric-ca-client:
+ Version: v1.5.22
+ Go version: go1.26.4
+ OS/Arch: linux/amd64
+$ configtxlator version
+configtxlator:
+ Version: v3.1.5
+ Commit SHA: 86c1172
+ Go version: go1.26.4
+ OS/Arch: linux/amd64
+usage: osnadmin --orderer-address=ORDERER-ADDRESS [<flags>] <command> [<args> ...]
+
+Orderer Service Node (OSN) administration
+
+Flags:
+      --help                     Show context-sensitive help (also try
+                                 --help-long and --help-man).
+  -o, --orderer-address=ORDERER-ADDRESS  
+                                 Admin endpoint of the OSN
+      --ca-file=CA-FILE          Path to file containing PEM-encoded TLS CA
+                                 certificate(s) for the OSN
+      --client-cert=CLIENT-CERT  Path to file containing PEM-encoded X509 public
+                                 key to use for mutual TLS communication with
+                                 the OSN
+      --client-key=CLIENT-KEY    Path to file containing PEM-encoded private key
+                                 to use for mutual TLS communication with the
+                                 OSN
+      --no-status                Remove the HTTP status message from the command
+                                 output
+
+Commands:
+  help [<command>...]
+    Show help.
+
+  channel join --channelID=CHANNELID --config-block=CONFIG-BLOCK
+    Join an Ordering Service Node (OSN) to a channel. If the channel does not
+    yet exist, it will be created.
+
+  channel list [<flags>]
+    List channel information for an Ordering Service Node (OSN). If the
+    channelID flag is set, more detailed information will be provided for that
+    channel.
+
+  channel remove --channelID=CHANNELID
+    Remove a channel from an Ordering Service Node (OSN).
+
+  channel update --channelID=CHANNELID --config-update-envelope=CONFIG-UPDATE-ENVELOPE [<flags>]
+    Update an Ordering Service Node (OSN) to a channel.
+
+  channel fetch --channelID=CHANNELID --blockID=BLOCKID --outputfile=OUTPUTFILE [<flags>]
+    Fetch a specified block, writing it to a file.
+
+
+  ✔ osnadmin доступен
+
+REPOSITORY                           TAG           SIZE
+hyperledger/fabric-ca                1.5           398MB
+hyperledger/fabric-ca                1.5.22        398MB
+hyperledger/fabric-ca                latest        398MB
+ghcr.io/hyperledger/fabric-ca        1.5.22        398MB
+hyperledger/fabric-peer              3.1           228MB
+hyperledger/fabric-peer              3.1.5         228MB
+hyperledger/fabric-peer              latest        228MB
+ghcr.io/hyperledger/fabric-peer      3.1.5         228MB
+hyperledger/fabric-orderer           3.1           179MB
+hyperledger/fabric-orderer           3.1.5         179MB
+hyperledger/fabric-orderer           latest        179MB
+ghcr.io/hyperledger/fabric-orderer   3.1.5         179MB
+hyperledger/fabric-ccenv             3.1           1.04GB
+hyperledger/fabric-ccenv             3.1.5         1.04GB
+hyperledger/fabric-ccenv             latest        1.04GB
+ghcr.io/hyperledger/fabric-ccenv     3.1.5         1.04GB
+hyperledger/fabric-baseos            3.1           208MB
+hyperledger/fabric-baseos            3.1.5         208MB
+hyperledger/fabric-baseos            latest        208MB
+ghcr.io/hyperledger/fabric-baseos    3.1.5         208MB
+hyperledger/fabric-peer              3.1.0         222MB
+ghcr.io/hyperledger/fabric-peer      3.1.0         222MB
+hyperledger/fabric-orderer           3.1.0         175MB
+hyperledger/fabric-ccenv             3.1.0         1.03GB
+ghcr.io/hyperledger/fabric-ccenv     3.1.0         1.03GB
+ghcr.io/hyperledger/fabric-baseos    3.1.0         229MB
+hyperledger/fabric-baseos            3.1.0         229MB
+hyperledger/fabric-ca                1.5.15        351MB
+ghcr.io/hyperledger/fabric-ca        1.5.15        351MB
+  ✔ peer 3.1.5
+  ✔ fabric-ca-client 1.5.22
+  ✔ образ fabric-peer:3.1.5
+  ✔ образ fabric-orderer:3.1.5
+  ✔ образ fabric-ca:1.5.22
+
+  ══════ ИТОГ: 8 проверок пройдено, ошибок нет ✔ ══════

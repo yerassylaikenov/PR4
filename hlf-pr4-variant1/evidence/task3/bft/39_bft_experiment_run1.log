@@ -1,0 +1,97 @@
+# command : ./scripts/39_bft_experiment.sh 
+# date    : 2026-10-14 12:29:21 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/bft/39_bft_experiment.log
+
+━━━━ Исходное состояние: view=0 leader=1, живые: orderer orderer2 orderer3 orderer4 ━━━━
+  высоты: orderer=6 orderer2=6 orderer3=6 orderer4=6 peer0.org1=6 peer0.org2=6
+  ➜ лидер: id 1 (orderer.example.com); для отказа выбран не-лидер: orderer4.example.com
+
+━━━━ E1. Базовая линия — 4 из 4 orderer ━━━━
+  ✔ E1: транзакция через orderer → VALID за 0.3 c, блок 6, TxID=12a21f5a863fe7547877fecb103aefbd598da7f33f9a277e0ed3b9dfa33fff36
+  высоты: orderer=7 orderer2=7 orderer3=7 orderer4=7 peer0.org1=7 peer0.org2=7
+  ✔ все 4 orderer и оба peer на высоте H = 7
+
+━━━━ E2. Контролируемый отказ: docker stop orderer4.example.com (не лидер) — 12:29:27 ━━━━
+$ docker stop orderer4.example.com
+orderer4.example.com
+  высоты: orderer=7 orderer2=7 orderer3=7 orderer4=— peer0.org1=7 peer0.org2=7
+
+━━━━ E3. Контрольная транзакция при n − 1 (через живой orderer.example.com) ━━━━
+  ✔ E3: транзакция через orderer → VALID за 0.3 c, блок 7, TxID=03434274bea22f8bf232f8a09afd2a470f499772db3754c0060c0f0004ed59db
+  высоты: orderer=8 orderer2=8 orderer3=8 orderer4=— peer0.org1=8 peer0.org2=8
+  ✔ высота H+1 = 8 на 3 живых orderer и обоих peers — консенсус продолжается
+  логи живых orderer после остановки orderer4 (фрагмент):
+    [orderer] 2026-10-14 07:29:29.007 UTC 00f3 WARN [orderer.common.cluster.step] sendMessage -> Send of ConsensusRequest for channel  with payload of size 5915 to orderer4(orderer4.example.com:7058) took 825.568µ
+    [orderer2] 2026-10-14 07:29:29.014 UTC 00c6 WARN [orderer.common.cluster.step] sendMessage -> Send of ConsensusRequest for channel  with payload of size 70 to orderer4(orderer4.example.com:7058) took 97.12µs bu
+    [orderer3] 2026-10-14 07:29:29.018 UTC 00c3 WARN [orderer.common.cluster.step] sendMessage -> Send of ConsensusRequest for channel  with payload of size 70 to orderer4(orderer4.example.com:7058) took 133.408µs 
+
+━━━━ E4. Восстановление: docker start orderer4.example.com → catch-up ━━━━
+$ docker start orderer4.example.com
+orderer4.example.com
+  catch-up orderer4 до высоты 7 за 96 c
+  высоты: orderer=8 orderer2=8 orderer3=8 orderer4=7 peer0.org1=8 peer0.org2=8
+  ✔ E4: транзакция через orderer → VALID за 0.3 c, блок 8, TxID=5a8c790d855cc1f47f63bc734f5d2d7e2d6ae2957f5bb71bce477471b64fa34a
+  высоты: orderer=9 orderer2=9 orderer3=9 orderer4=9 peer0.org1=9 peer0.org2=9
+  ✔ новая транзакция видна на всех 4 orderer (высота H+2 = 9)
+
+━━━━ E5. (доп.) Остановка ЛИДЕРА orderer.example.com → view change ━━━━
+$ docker stop orderer.example.com
+orderer.example.com
+  ✔ E5: транзакция через orderer2 → VALID за 52.9 c, блок 9, TxID=6f43e299fddec654bdc66c594b8ce120abfe4f8051e6d3ea8ba61e5dbfe881c2
+  время от остановки лидера до фиксации транзакции: 54 c
+  view change в логах живых orderer:
+    [orderer2] 2026-10-14 07:32:21.182 UTC 01ad INFO [orderer.consensus.smartbft.consensus] ChangeRole -> Changing to leader role, current view: 1, current leader: 2 channel=bftchannel
+    [orderer2] 2026-10-14 07:32:21.182 UTC 01ae INFO [orderer.consensus.smartbft.consensus] startView -> Starting view with number 1, sequence 9, and decisions 0 channel=bftchannel
+    [orderer3] 2026-10-14 07:32:21.187 UTC 0100 INFO [orderer.consensus.smartbft.consensus] ChangeRole -> Changing to follower role, current view: 1, current leader: 2 channel=bftchannel
+    [orderer3] 2026-10-14 07:32:21.187 UTC 0101 INFO [orderer.consensus.smartbft.consensus] startView -> Starting view with number 1, sequence 9, and decisions 0 channel=bftchannel
+    [orderer4] 2026-10-14 07:32:21.185 UTC 03c6 INFO [orderer.consensus.smartbft.consensus] ChangeRole -> Changing to follower role, current view: 1, current leader: 2 channel=bftchannel
+    [orderer4] 2026-10-14 07:32:21.185 UTC 03c7 INFO [orderer.consensus.smartbft.consensus] startView -> Starting view with number 1, sequence 9, and decisions 0 channel=bftchannel
+  новый view=1 leader=2
+  высоты: orderer=— orderer2=10 orderer3=10 orderer4=10 peer0.org1=10 peer0.org2=10
+
+━━━━ E6. Восстановление бывшего лидера ━━━━
+$ docker start orderer.example.com
+orderer.example.com
+  высоты: orderer=10 orderer2=10 orderer3=10 orderer4=10 peer0.org1=10 peer0.org2=10
+  ✔ orderer догнал канал; view=1 leader=2
+
+━━━━ E7. (доп.) Остановка ДВУХ orderer (> f = 1) → нет кворума 3 из 4 ━━━━
+$ docker stop orderer4.example.com orderer3.example.com
+orderer4.example.com
+orderer3.example.com
+  ➜ E7: транзакция через orderer2 → REJECTED_AT_ENDORSEMENT за 40.1 c
+      2026-10-14 12:33:14.746 +05 0002 ERRO [grpc] Errorf -> [transport] Client received GoAway with error code ENHANCE_YOUR_CALM and debug data equal to ASCII "too_many_pings".
+      Error: error receiving from deliver filtered at localhost:7051: rpc error: code = DeadlineExceeded desc = stream terminated by RST_STREAM with error code: CANCEL - proposal response: <nil>
+  высоты: orderer=10 orderer2=10 orderer3=— orderer4=— peer0.org1=10 peer0.org2=10
+  ✔ без кворума транзакция не зафиксирована (REJECTED_AT_ENDORSEMENT), высота не изменилась (10)
+
+━━━━ E8. Восстановление обоих узлов → кворум восстановлен ━━━━
+$ docker start orderer4.example.com orderer3.example.com
+orderer4.example.com
+orderer3.example.com
+  транзакция E7 (PO-BFT-E7-123244) после восстановления кворума: PaymentOrderExists = false
+  ✔ E8: транзакция через orderer2 → VALID за 47.5 c, блок 10, TxID=ccfd928505c6e82a530c2eb67b37affa23f23119644ec428fb5645ddb0f822fa
+  высоты: orderer=11 orderer2=11 orderer3=11 orderer4=11 peer0.org1=11 peer0.org2=11
+  ✔ после восстановления кворума сеть снова обрабатывает транзакции
+
+━━━━ Таблица эксперимента → evidence/task3/bft/experiment.md ━━━━
+# Эксперимент SmartBFT — bftchannel (n = 4, f = 1, кворум 3)
+
+Скрипт `scripts/39_bft_experiment.sh`, 2026-10-14 12:34:31. Высоты: `osnadmin channel list` на admin-порту каждого orderer и `peer channel getinfo` на каждом peer; «—» — узел остановлен.
+
+| Шаг | Действие | Живые orderer | Кворум | Результат | TxID | Высоты |
+|---|---|---|---|---|---|---|
+| E1 | базовая транзакция | 4/4 | да (4 ≥ 3) | VALID | `12a21f5a863fe754…` | orderer=7 orderer2=7 orderer3=7 orderer4=7 peer0.org1=7 peer0.org2=7 |
+| E2 | docker stop orderer4 (не лидер), 12:29:28 | 3/4 | да (3 ≥ 3) | — | - | orderer=7 orderer2=7 orderer3=7 orderer4=— peer0.org1=7 peer0.org2=7 |
+| E3 | контрольная транзакция при отказе 1 узла | 3/4 | да | VALID | `03434274bea22f8b…` | orderer=8 orderer2=8 orderer3=8 orderer4=— peer0.org1=8 peer0.org2=8 |
+| E4 | docker start orderer4, catch-up, транзакция | 4/4 | да | VALID | `5a8c790d855cc1f4…` | orderer=9 orderer2=9 orderer3=9 orderer4=9 peer0.org1=9 peer0.org2=9 |
+| E5 | docker stop лидера (orderer) → view change, транзакция через orderer2 | 3/4 | да | VALID (52.9 c) | `6f43e299fddec654…` | orderer=— orderer2=10 orderer3=10 orderer4=10 peer0.org1=10 peer0.org2=10 |
+| E6 | docker start orderer, catch-up | 4/4 | да | — | - | orderer=10 orderer2=10 orderer3=10 orderer4=10 peer0.org1=10 peer0.org2=10 |
+| E7 | docker stop orderer4 + orderer3 (2 > f), транзакция через orderer2 | 2/4 | **нет** (2 < 3) | REJECTED_AT_ENDORSEMENT (ожидание 40.1 c) | `…` | orderer=10 orderer2=10 orderer3=— orderer4=— peer0.org1=10 peer0.org2=10 |
+| E8 | docker start orderer4 + orderer3, транзакция | 4/4 | да | VALID | `ccfd928505c6e82a…` | orderer=11 orderer2=11 orderer3=11 orderer4=11 peer0.org1=11 peer0.org2=11 |
+
+Транзакция E7 после восстановления кворума: `PaymentOrderExists(PO-BFT-E7-123244) = false`.
+
+  ══════ ИТОГ: 11 проверок пройдено, ошибок нет ✔ ══════

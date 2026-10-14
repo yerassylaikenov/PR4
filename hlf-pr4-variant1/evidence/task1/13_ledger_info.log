@@ -1,0 +1,64 @@
+# command : ./scripts/13_ledger_info.sh 
+# date    : 2026-10-14 11:26:29 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task1/13_ledger_info.log
+
+━━━━ Высота Blockchain канала paymentchannel ━━━━
+$ peer channel getinfo -c paymentchannel
+2026-10-14 11:26:29.700 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Blockchain info: {"height":15,"currentBlockHash":"7+KqMIh3IKXgeMZ1ci6YCLq54Wqg4FcIYEio+N3bCT4=","previousBlockHash":"SM2MJEjETB/tqhLuPxA5mPwGmWaoXtZA+SZGdv+cxEE="}
+  ✔ высота = 15 (блоки 0..14)
+  currentBlockHash  = 7+KqMIh3IKXgeMZ1ci6YCLq54Wqg4FcIYEio+N3bCT4=
+  previousBlockHash = SM2MJEjETB/tqhLuPxA5mPwGmWaoXtZA+SZGdv+cxEE=
+
+━━━━ Последний блок (peer channel fetch newest) ━━━━
+$ peer channel fetch newest /tmp/tmp.rIjXeQS4xf/newest.pb -c paymentchannel -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 11:26:29.864 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:26:29.868 +05 0002 INFO [cli.common] readBlock -> Received block: 14
+  number        = 14
+  data_hash     = vQMdrxR+7qdm6Mz/FxhyyRFjeV7Q+Eo5Xl+ny9iHTAQ=
+  previous_hash = SM2MJEjETB/tqhLuPxA5mPwGmWaoXtZA+SZGdv+cxEE=
+  транзакций    = 2
+  TRANSACTIONS_FILTER в копии orderer   : "" (пусто — orderer не валидирует)
+  TRANSACTIONS_FILTER в ledger peer0.org1: "AAs=" (qscc GetBlockByNumber)
+  ✔ заголовки копий orderer и peer идентичны
+  tx[0] 0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3  type=3  validation=VALID
+  tx[1] 9f45207008f0416c6cc665bf14adbfd5e3b420c9caf4412fe0f330ca1c889de2  type=3  validation=MVCC_READ_CONFLICT
+  ✔ номер последнего блока = высота − 1 = 14
+
+━━━━ Проверка связности хэш-цепочки ━━━━
+  ✔ previous_hash блока #14 совпадает с previousBlockHash из getinfo
+  SHA-256(ASN.1(header #14))     = 7+KqMIh3IKXgeMZ1ci6YCLq54Wqg4FcIYEio+N3bCT4=
+  ✔ хэш заголовка блока #14, пересчитанный локально, = currentBlockHash
+$ peer channel fetch 13 /tmp/tmp.rIjXeQS4xf/prev.pb -c paymentchannel -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 11:26:30.233 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:26:30.236 +05 0002 INFO [cli.common] readBlock -> Received block: 13
+  SHA-256(ASN.1(header #13)) = SM2MJEjETB/tqhLuPxA5mPwGmWaoXtZA+SZGdv+cxEE=
+  previous_hash в блоке #14    = SM2MJEjETB/tqhLuPxA5mPwGmWaoXtZA+SZGdv+cxEE=
+  ✔ блок #13 → блок #14: хэш заголовка N−1 записан в previous_hash блока N
+  ✔ вся цепочка 0..14 проверена: 15 блоков, разрывов нет
+
+━━━━ Блок 0 (genesis / конфигурационный блок канала) ━━━━
+$ peer channel fetch oldest /tmp/tmp.rIjXeQS4xf/genesis.pb -c paymentchannel -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 11:26:32.456 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:26:32.460 +05 0002 INFO [cli.common] readBlock -> Received block: 0
+  тип транзакции        : 1
+  организации Application: Org1MSP, Org2MSP
+  организации Orderer    : OrdererOrg
+  MSP Org1MSP — корневых CA: 1, NodeOUs: true
+  политики канала        : Admins, Readers, Writers
+  политики Application   : Admins=MAJORITY, Endorsement=MAJORITY, LifecycleEndorsement=MAJORITY, Readers=ANY, Writers=ANY
+  LifecycleEndorsement   : MAJORITY Endorsement
+  Channel capabilities   : V2_0
+  Application capabilities: V2_5
+  Orderer capabilities   : V2_0
+  ConsensusType          : etcdraft
+  BatchSize / Timeout    : max_message_count=10, timeout=2s
+  ✔ блок 0 = конфигурация канала (CONFIG), бизнес-транзакций не содержит
+
+━━━━ Blockchain vs World State — на примере MVCC-демо ━━━━
+  ✔ невалидная транзакция SubmitPaymentOrder (9f45207008f0416c6cc665bf14adbfd5e3b420c9caf4412fe0f330ca1c889de2) лежит в блоке #14 (Blockchain хранит всё)
+  ✔ World State PO-0005: CANCELLED lastTxId=0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3 — write-set невалидной транзакции не применён
+
+  ══════ ИТОГ: 10 проверок пройдено, ошибок нет ✔ ══════

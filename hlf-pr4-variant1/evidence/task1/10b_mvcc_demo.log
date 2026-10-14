@@ -1,0 +1,34 @@
+# command : ./scripts/10b_mvcc_demo.sh 
+# date    : 2026-10-14 11:24:17 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task1/10b_mvcc_demo.log
+
+━━━━ MVCC: параллельные Submit и Cancel одного ключа PO-0005 ━━━━
+  состояние до демонстрации: PO-0005 = CANCELLED
+  ➜ демонстрация уже выполнялась — TxID и коды восстанавливаются из блоков
+  блок #14  tx[0]  CancelPaymentOrder   0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3  → VALID
+  блок #14  tx[1]  SubmitPaymentOrder   9f45207008f0416c6cc665bf14adbfd5e3b420c9caf4412fe0f330ca1c889de2  → MVCC_READ_CONFLICT
+  ✔ обе транзакции упорядочены в один блок #14
+  ✔ одна транзакция VALID, вторая MVCC_READ_CONFLICT (MVCC_READ_CONFLICT VALID)
+  итоговое состояние: PO-0005 status=CANCELLED lastTxId=0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3
+  ✔ World State отражает только VALID-транзакцию 0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3
+  ✔ write-set MVCC_READ_CONFLICT-транзакции 9f45207008f0416c6cc665bf14adbfd5e3b420c9caf4412fe0f330ca1c889de2 не применён (но она хранится в блоке)
+
+━━━━ Итоговая таблица TxID задания 1.5 (evidence/task1/txids.csv) ━━━━
+n   function                      args                                                                          invoker        txid                                                              block  validation_code
+T1  CreatePaymentOrder            PO-0001; Org2MSP; 5000000; KZT; 119; Оплата по счёту №42 за услуги            Org1MSP/Admin  d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a  6      VALID
+T2  SubmitPaymentOrder            PO-0001                                                                       Org1MSP/Admin  8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681  7      VALID
+T3  AcceptPaymentOrder            PO-0001                                                                       Org2MSP/Admin  bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6  8      VALID
+T4  SettlePaymentOrder            PO-0001                                                                       Org2MSP/Admin  6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea  9      VALID
+T5  CreatePaymentOrder (Gateway)  PO-0002; Org2MSP; 120000000; USD; 710; Импорт оборудования; контракт 2026/17  Org1MSP/Admin  69f6d6bd56354453d50261bf486f6fe82ecadedd6df9b923842269d8b2e501ce  10     VALID
+T6  CancelPaymentOrder            PO-0002                                                                       Org1MSP/Admin  499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba  11     VALID
+T7  CreatePaymentOrder            PO-0003; Org2MSP; 75000000; KZT; 342; Возврат займа по договору 15-К          Org1MSP/Admin  43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67  12     VALID
+N1  SettlePaymentOrder            PO-0003                                                                       Org2MSP/Admin  -                                                                 -      REJECTED_AT_ENDORSEMENT
+N2  CreatePaymentOrder            PO-0004; Org1MSP; 100; KZT; 119; Попытка от Org2                              Org2MSP/Admin  -                                                                 -      REJECTED_AT_ENDORSEMENT
+T8  CreatePaymentOrder            PO-0005; Org2MSP; 990000; EUR; 119; MVCC demo                                 Org1MSP/Admin  d949c0a625223cd7a90bedd4e0fb11c3bf8c90822cd14ba55e4074284a4250d0  13     VALID
+M2  CancelPaymentOrder            "['PO-0005']"                                                                 Org1MSP/Admin  0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3  14     VALID
+M1  SubmitPaymentOrder            "['PO-0005']"                                                                 Org1MSP/Admin  9f45207008f0416c6cc665bf14adbfd5e3b420c9caf4412fe0f330ca1c889de2  14     MVCC_READ_CONFLICT
+  ✔ VALID-транзакций: 9 (требуется ≥ 4), одна из них через Gateway (T5)
+
+  ══════ ИТОГ: 5 проверок пройдено, ошибок нет ✔ ══════

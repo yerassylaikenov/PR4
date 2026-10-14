@@ -1,0 +1,69 @@
+# command : ./scripts/38_backup_volumes.sh 
+# date    : 2026-10-14 12:19:04 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/38_backup.log
+
+━━━━ Состояние до бэкапа: высота 64, currentBlockHash pvthqFOPl0vrLbxyVbdhyfPTTARJGfZmGXeHcT+HKrA= ━━━━
+
+━━━━ 1. Останов узлов (peer → orderer → CouchDB) ━━━━
+$ docker stop peer0.org1.example.com peer0.org2.example.com orderer.example.com couchdb0 couchdb1
+peer0.org1.example.com
+peer0.org2.example.com
+orderer.example.com
+couchdb0
+couchdb1
+  ✔ узлы остановлены — файлы ledger и CouchDB консистентны
+
+━━━━ 2. CouchDB (бэкап CouchDB старше бэкапа peer — требование документации) ━━━━
+  ✔ couchdb0: 72K (зашифровано AES-256-CBC/PBKDF2)
+  ✔ couchdb1: 68K (зашифровано AES-256-CBC/PBKDF2)
+
+━━━━ 3. Ledger orderer и peers (/var/hyperledger/production) ━━━━
+  ✔ orderer.example.com: 232K (зашифровано AES-256-CBC/PBKDF2)
+  ✔ peer0.org1.example.com: 11M (зашифровано AES-256-CBC/PBKDF2)
+  ✔ peer0.org2.example.com: 11M (зашифровано AES-256-CBC/PBKDF2)
+
+━━━━ 4. MSP / TLS / Fabric CA (organizations/), channel-artifacts ━━━━
+  ✔ organizations: 84K (зашифровано AES-256-CBC/PBKDF2)
+  ✔ channel-artifacts: 40K (зашифровано AES-256-CBC/PBKDF2)
+
+━━━━ 5. Запуск узлов (CouchDB → orderer → peers) ━━━━
+$ docker start couchdb0 couchdb1 orderer.example.com peer0.org1.example.com peer0.org2.example.com
+couchdb0
+couchdb1
+orderer.example.com
+peer0.org1.example.com
+peer0.org2.example.com
+  ✔ после рестарта высота и currentBlockHash не изменились (64)
+  ✔ сеть обслуживает запросы (ReadPaymentOrder PO-0001)
+
+━━━━ 6. Проверка восстановимости: расшифровка + контрольная сумма ━━━━
+  ✔ channel-artifacts.tgz: расшифрован, sha256 совпадает, архив читается
+  ✔ couchdb0.tgz: расшифрован, sha256 совпадает, архив читается
+  ✔ couchdb1.tgz: расшифрован, sha256 совпадает, архив читается
+  ✔ orderer.example.com.tgz: расшифрован, sha256 совпадает, архив читается
+  ✔ organizations.tgz: расшифрован, sha256 совпадает, архив читается
+  ✔ peer0.org1.example.com.tgz: расшифрован, sha256 совпадает, архив читается
+  ✔ peer0.org2.example.com.tgz: расшифрован, sha256 совпадает, архив читается
+
+━━━━ Содержимое бэкапа (ключ — только в .secrets/backup.key) ━━━━
+  648	SHA256SUMS.enc
+  606	SHA256SUMS.plain
+  40128	channel-artifacts.tgz.enc
+  72096	couchdb0.tgz.enc
+  69456	couchdb1.tgz.enc
+  234704	orderer.example.com.tgz.enc
+  85152	organizations.tgz.enc
+  11222992	peer0.org1.example.com.tgz.enc
+  11219984	peer0.org2.example.com.tgz.enc
+  SHA256 (зашифрованные файлы):
+    c3b12787d3cb20075f31bb063e1bb4d8cd610ed8e07e0fb9c3b392872225cacd  ./channel-artifacts.tgz.enc
+    4c3b0fedfe0c5ec6ecd1a6c9f8359be8df1fcb3d6cd4e1aed4e1c1c3bffcba87  ./couchdb0.tgz.enc
+    50f828c792c2410a99aa4a21146410a2f4cebd3656a617583210acb80dbf074c  ./couchdb1.tgz.enc
+    7e11590943b227e6b340cb69e044c479c112dc6435d0a1eb4d72a75e2c8e0806  ./orderer.example.com.tgz.enc
+    5a2fe09eb1218f88e85260145030ed48a82eabd9b8f43f45ed426df92c7d1161  ./organizations.tgz.enc
+    440155718fc01895923f6050f3a298347d6af49ae1e78f4b6a9a67300eb64fb1  ./peer0.org1.example.com.tgz.enc
+    bc022ccece97deba2169c01fc4bdd6a2d2cb11a411f2ed88692c4f56a2af5c8f  ./peer0.org2.example.com.tgz.enc
+
+  ══════ ИТОГ: 17 проверок пройдено, ошибок нет ✔ ══════

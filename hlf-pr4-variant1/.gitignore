@@ -1,0 +1,26 @@
+# Fabric binaries, samples and generated crypto material — never commit
+fabric-samples/
+organizations/
+**/organizations/
+*_sk
+**/keystore/
+.secrets/
+*.block
+*.pb
+*.tar.gz
+vendor/
+**/vendor/
+backup/
+client/wallet/
+*.pem
+*.key
+# Windows metadata
+*:Zone.Identifier
+# Build output
+client/payment-client
+*.test
+coverage.out
+build/
+demo-evidence/
+.versions
+client/payment-client

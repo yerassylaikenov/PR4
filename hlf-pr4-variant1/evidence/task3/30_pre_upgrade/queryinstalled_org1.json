@@ -1,0 +1,46 @@
+{
+	"installed_chaincodes": [
+		{
+			"package_id": "payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748",
+			"label": "payment_1.0",
+			"references": {
+				"paymentchannel": {
+					"chaincodes": [
+						{
+							"name": "payment",
+							"version": "1.0"
+						}
+					]
+				}
+			}
+		},
+		{
+			"package_id": "paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268",
+			"label": "paymentvuln_1.0",
+			"references": {
+				"paymentchannel": {
+					"chaincodes": [
+						{
+							"name": "paymentvuln",
+							"version": "1.0"
+						}
+					]
+				}
+			}
+		},
+		{
+			"package_id": "paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985",
+			"label": "paymentsecure_1.0",
+			"references": {
+				"paymentchannel": {
+					"chaincodes": [
+						{
+							"name": "paymentsecure",
+							"version": "1.0"
+						}
+					]
+				}
+			}
+		}
+	]
+}

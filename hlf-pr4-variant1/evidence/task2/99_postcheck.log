@@ -1,0 +1,32 @@
+# command : ./scripts/20_precheck.sh 
+# date    : 2026-10-14 11:48:59 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task2/99_postcheck.log
+
+━━━━ querycommitted --name payment (ожидается version 1.0, sequence 1) ━━━━
+$ peer lifecycle chaincode querycommitted --channelID paymentchannel --name payment --output json
+{
+	"sequence": 1,
+	"version": "1.0",
+	"endorsement_plugin": "escc",
+	"validation_plugin": "vscc",
+	"validation_parameter": "CiwSDBIKCAISAggAEgIIARoNEgsKB09yZzFNU1AQAxoNEgsKB09yZzJNU1AQAw==",
+	"collections": {},
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ payment Version: 1.0
+  ✔ payment Sequence: 1
+  ✔ approvals Org1MSP и Org2MSP
+
+━━━━ Все определения chaincode в канале ━━━━
+$ peer lifecycle chaincode querycommitted --channelID paymentchannel
+Committed chaincode definitions on channel 'paymentchannel':
+Name: paymentvuln, Version: 1.0, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc
+Name: payment, Version: 1.0, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc
+Name: paymentsecure, Version: 1.0, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc
+
+  ══════ ИТОГ: 3 проверок пройдено, ошибок нет ✔ ══════

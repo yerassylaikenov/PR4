@@ -1,0 +1,33 @@
+--- payment-v1/chaincode/contract.go	2026-10-14 10:39:49.581278101 +0500
++++ payment-vuln/chaincode/contract.go	2026-10-14 11:30:16.026190700 +0500
+@@ -94,8 +94,12 @@
+ }
+ 
+ // SubmitPaymentOrder — sender bank authorises the debit: CREATED -> SUBMITTED.
++//
++// INTENTIONALLY VULNERABLE (lab): missing caller authorization — OWASP SC01:2025
++// The step is executed with partyAnyone, so the caller MSP is never compared with senderBankMSP:
++// the receiver bank (Org2) can authorise the debit of a payment order it does not own.
+ func (s *SmartContract) SubmitPaymentOrder(ctx contractapi.TransactionContextInterface, id string) (*PaymentOrder, error) {
+-	return s.transition(ctx, id, StatusSubmitted, partySender, "")
++	return s.transition(ctx, id, StatusSubmitted, partyAnyone, "")
+ }
+ 
+ // AcceptPaymentOrder — receiver bank accepts: SUBMITTED -> ACCEPTED.
+@@ -221,6 +225,7 @@
+ const (
+ 	partySender party = iota
+ 	partyReceiver
++	partyAnyone // INTENTIONALLY VULNERABLE (lab): skips the caller check — used only by SubmitPaymentOrder
+ )
+ 
+ // transition applies one state-machine edge after authorisation and validation.
+@@ -245,7 +250,7 @@
+ 	if who == partyReceiver {
+ 		required = po.ReceiverBankMSP
+ 	}
+-	if callerMSP != required {
++	if who != partyAnyone && callerMSP != required {
+ 		return nil, newErr(ErrUnauthorized, "caller organisation is not allowed to move %s to %s", id, to)
+ 	}
+ 

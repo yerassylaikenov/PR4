@@ -1,0 +1,6 @@
+# Reviewed false positives (gitleaks generic-api-key).
+# evidence/task2/23_private_flow.log:55 — "key_hash=<base64>" is the public SHA-256 hash of the private-data KEY
+# taken from the block's collection_hashed_rwset; every channel member and the orderer can see it. Not a secret.
+25b06ae625ab4570fb655c96be08f0d47c4655b4:evidence/task2/23_private_flow.log:generic-api-key:55
+evidence/task2/23_private_flow.log:generic-api-key:55
+/repo/evidence/task2/23_private_flow.log:generic-api-key:55

@@ -1,0 +1,21 @@
+{
+  "header": {
+    "data_hash": "vQMdrxR+7qdm6Mz/FxhyyRFjeV7Q+Eo5Xl+ny9iHTAQ=",
+    "number": "14",
+    "previous_hash": "SM2MJEjETB/tqhLuPxA5mPwGmWaoXtZA+SZGdv+cxEE="
+  },
+  "tx": [
+    {
+      "tx_id": "0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3",
+      "type": 3,
+      "creator": "Org1MSP",
+      "chaincode": "payment"
+    },
+    {
+      "tx_id": "9f45207008f0416c6cc665bf14adbfd5e3b420c9caf4412fe0f330ca1c889de2",
+      "type": 3,
+      "creator": "Org1MSP",
+      "chaincode": "payment"
+    }
+  ]
+}

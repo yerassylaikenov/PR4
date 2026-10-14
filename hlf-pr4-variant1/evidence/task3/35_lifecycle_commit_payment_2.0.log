@@ -1,0 +1,47 @@
+# command : scripts/lifecycle.sh -n payment -p chaincode/payment-v2 -v 2.0 -s 2 -l payment_2.0  -C paymentchannel
+# date    : 2026-10-14 12:00:15 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/35_lifecycle_commit_payment_2.0.log
+
+━━━━ Lifecycle: payment v2.0, sequence 2, канал paymentchannel ━━━━
+  Endorsement Policy : AND('Org1MSP.peer','Org2MSP.peer')
+  ➜ режим --commit-only: пакет уже установлен и утверждён, Package ID payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+
+━━━━ 6. checkcommitreadiness перед commit ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ обе организации утвердили определение (Org1MSP: true, Org2MSP: true)
+
+━━━━ 7. Commit (endorse обоими peers) ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --peerAddresses localhost:7051 --tlsRootCertFiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem --peerAddresses localhost:9051 --tlsRootCertFiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+2026-10-14 12:00:19.025 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [bcdefe20e552a618c7695aac592771cd6624688b14fa2947b8b4fa8294ccd282] committed with status (VALID) at localhost:9051
+2026-10-14 12:00:19.082 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [bcdefe20e552a618c7695aac592771cd6624688b14fa2947b8b4fa8294ccd282] committed with status (VALID) at localhost:7051
+
+━━━━ 8. querycommitted — проверка зафиксированного определения ━━━━
+$ peer lifecycle chaincode querycommitted --channelID paymentchannel --name payment --output json
+{
+	"sequence": 2,
+	"version": "2.0",
+	"endorsement_plugin": "escc",
+	"validation_plugin": "vscc",
+	"validation_parameter": "CiwSDBIKCAISAggAEgIIARoNEgsKB09yZzFNU1AQAxoNEgsKB09yZzJNU1AQAw==",
+	"collections": {},
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ Version: 2.0
+  ✔ Sequence: 2
+  ✔ Approvals: Org1MSP=true, Org2MSP=true
+  Decoded endorsement policy: 2-out-of-2 of [Org1MSP,Org2MSP] role=PEER
+  ✔ Endorsement Policy = AND('Org1MSP.peer','Org2MSP.peer') (2 из 2, роль PEER)
+
+  ══════ ИТОГ: 5 проверок пройдено, ошибок нет ✔ ══════

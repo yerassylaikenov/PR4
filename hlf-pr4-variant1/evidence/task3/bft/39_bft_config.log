@@ -1,0 +1,71 @@
+# command : ./scripts/39_bft_config.sh 
+# date    : 2026-10-14 12:26:31 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/bft/39_bft_config.log
+
+━━━━ Конфигурационный блок канала bftchannel ━━━━
+$ peer channel fetch config /tmp/tmp.FEEomqcVhl/cfg.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c bftchannel --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 12:26:31.582 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 12:26:31.600 +05 0002 INFO [cli.common] readBlock -> Received block: 2
+2026-10-14 12:26:31.601 +05 0003 INFO [channelCmd] fetch -> Retrieving last config block: 2
+2026-10-14 12:26:31.670 +05 0004 INFO [cli.common] readBlock -> Received block: 2
+  ConsensusType            : BFT
+  ✔ ConsensusType = BFT (SmartBFT)
+  Channel capabilities     : V3_0
+  ✔ Channel capability V3_0
+  Orderer capabilities     : V2_0
+  Application capabilities : V2_5
+
+━━━━ Consenters (Orderers.value.consenter_mapping) ━━━━
+  ID   host                   port   MSP        
+  1    orderer.example.com   7050   OrdererMSP
+  2    orderer2.example.com   7052   OrdererMSP
+  3    orderer3.example.com   7056   OrdererMSP
+  4    orderer4.example.com   7058   OrdererMSP
+  ✔ 4 consenter-а: n = 3f + 1 = 4 → f = 1, кворум ⌈(n+f+1)/2⌉ = 3
+
+━━━━ Параметры SmartBFT (ConsensusType.value.metadata / options) ━━━━
+  {
+    "collect_timeout": "1s",
+    "decisions_per_leader": "0",
+    "incoming_message_buffer_size": "200",
+    "leader_heartbeat_count": "10",
+    "leader_heartbeat_timeout": "1m0s",
+    "leader_rotation": "ROTATION_UNSPECIFIED",
+    "request_auto_remove_timeout": "3m0s",
+    "request_batch_max_bytes": "10485760",
+    "request_batch_max_count": "100",
+    "request_batch_max_interval": "50ms",
+    "request_complain_timeout": "20s",
+    "request_forward_timeout": "2s",
+    "request_max_bytes": "0",
+    "request_pool_size": "100000",
+    "speed_up_view_change": false,
+    "sync_on_start": false,
+    "view_change_resend_interval": "5s",
+    "view_change_timeout": "20s"
+  }
+  request_batch_max_count = 100
+  request_batch_max_interval = 50ms
+  view_change_timeout = 20s
+  leader_heartbeat_timeout = 1m0s
+  leader_rotation = ROTATION_UNSPECIFIED
+  decisions_per_leader = 0
+  BatchSize: {"absolute_max_bytes":103809024,"max_message_count":10,"preferred_max_bytes":524288}, BatchTimeout: 2s
+
+━━━━ Orderer → порт → admin-порт (compose/compose-bft-test-net.yaml) ━━━━
+  orderer                listen     admin      operations
+  orderer.example.com    7050       7053       9443
+  orderer2.example.com   7052       7055       9446
+  orderer3.example.com   7056       7057       9447
+  orderer4.example.com   7058       7059       9448
+  ✔ имена и порты сверены с запущенными контейнерами
+
+━━━━ Лидер текущего view (логи orderer: ChangeRole) ━━━━
+  orderer.example.com: Changing to leader role, current view: 0, current leader: 1
+  orderer2.example.com: Changing to follower role, current view: 0, current leader: 1
+  orderer3.example.com: Changing to follower role, current view: 0, current leader: 1
+  orderer4.example.com: Changing to follower role, current view: 0, current leader: 1
+
+  ══════ ИТОГ: 4 проверок пройдено, ошибок нет ✔ ══════

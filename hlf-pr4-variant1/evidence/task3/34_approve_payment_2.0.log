@@ -1,0 +1,76 @@
+# command : scripts/lifecycle.sh -n payment -p chaincode/payment-v2 -v 2.0 -s 2 -l payment_2.0  -C paymentchannel
+# date    : 2026-10-14 11:59:56 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/34_approve_payment_2.0.log
+
+━━━━ Lifecycle: payment v2.0, sequence 2, канал paymentchannel ━━━━
+  Endorsement Policy : AND('Org1MSP.peer','Org2MSP.peer')
+
+━━━━ 1. go mod vendor (chaincode/payment-v2) ━━━━
+  ✔ зависимости завендорены (844 файлов .go)
+
+━━━━ 2. Package ━━━━
+$ peer lifecycle chaincode package /home/yeras/hlf-pr4-variant1/build/payment_2.0.tar.gz --path /home/yeras/hlf-pr4-variant1/chaincode/payment-v2 --lang golang --label payment_2.0
+  ✔ пакет payment_2.0.tar.gz (2.7M)
+
+━━━━ 3. Package ID ━━━━
+  Package ID: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+  ✔ Package ID вычислен: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+
+━━━━ 4. Install на peer0.org1 и peer0.org2 ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+  ➜ уже установлен на peer0.org1 — пропуск
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985, Label: paymentsecure_1.0
+Package ID: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c, Label: payment_2.0
+Package ID: payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748, Label: payment_1.0
+Package ID: paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268, Label: paymentvuln_1.0
+  ✔ peer0.org1: установлен payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+  ➜ уже установлен на peer0.org2 — пропуск
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c, Label: payment_2.0
+Package ID: payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748, Label: payment_1.0
+Package ID: paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268, Label: paymentvuln_1.0
+Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985, Label: paymentsecure_1.0
+  ✔ peer0.org2: установлен payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+
+━━━━ 5.1 approveformyorg — Org1MSP ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --package-id payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+2026-10-14 12:00:01.911 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [683e4b680433caa2d254c645440d9cb36264d76d5cb8aaead9147487fcbfb532] committed with status (VALID) at localhost:7051
+  ✔ Org1MSP утвердила payment v2.0 seq 2
+
+━━━━ 6.1 checkcommitreadiness после approve Org1 ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": false
+	}
+}
+  Org1MSP: true
+  Org2MSP: false
+
+━━━━ 5.2 approveformyorg — Org2MSP ━━━━
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+$ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --package-id payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+2026-10-14 12:00:04.379 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [a0818b5ee7b6ee84689d0e158990df5b970ed9c89a1e683f0c65331ca197b3fa] committed with status (VALID) at localhost:9051
+  ✔ Org2MSP утвердила payment v2.0 seq 2
+
+━━━━ 6.2 checkcommitreadiness после approve Org2 ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  Org1MSP: true
+  Org2MSP: true
+  ✔ обе организации утвердили определение (Org1MSP: true, Org2MSP: true)
+
+  ══════ ИТОГ: 8 проверок пройдено, ошибок нет ✔ ══════

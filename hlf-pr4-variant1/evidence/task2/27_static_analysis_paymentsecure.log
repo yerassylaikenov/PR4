@@ -1,0 +1,81 @@
+# command : ./scripts/07_static_analysis.sh 
+# date    : 2026-10-14 11:42:00 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task2/27_static_analysis_paymentsecure.log
+
+━━━━ Unit-тесты (chaincode/payment-secure) — counterfeiter-моки + in-memory ledger ━━━━
+  --- PASS: TestSecureThroughContractAPI (0.04s)
+  --- PASS: TestHappyPathWithPrivateData (0.00s)
+  --- PASS: TestINV1_UniqueID (0.00s)
+  --- PASS: TestINV2_SenderIsCreatorOrg1 (0.00s)
+  --- PASS: TestINV3_ImmutableFields (0.00s)
+  --- PASS: TestINV4_SubmitOnlySenderApprover (0.00s)
+  --- PASS: TestINV5_FourEyes (0.00s)
+  --- PASS: TestINV6_ReceiverProcessorOnly (0.00s)
+  --- PASS: TestINV7_SettleOnceFromAccepted (0.00s)
+  --- PASS: TestINV8_TerminalStatuses (0.00s)
+  --- PASS: TestINV9_DetailsRequiredAndFrozen (0.00s)
+  --- PASS: TestSetSettlementDetailsAuthorization (0.00s)
+  --- PASS: TestTransientValidation (0.00s)
+      --- PASS: TestTransientValidation/no_transient (0.00s)
+      --- PASS: TestTransientValidation/too_large (0.00s)
+      --- PASS: TestTransientValidation/KZ_IBAN_length (0.00s)
+      --- PASS: TestTransientValidation/BIN_letters (0.00s)
+      --- PASS: TestTransientValidation/trailing_data (0.00s)
+      --- PASS: TestTransientValidation/bad_IBAN_checksum (0.00s)
+      --- PASS: TestTransientValidation/lowercase_IBAN (0.00s)
+      --- PASS: TestTransientValidation/empty (0.00s)
+      --- PASS: TestTransientValidation/not_json (0.00s)
+      --- PASS: TestTransientValidation/BIN_11_digits (0.00s)
+      --- PASS: TestTransientValidation/wrong_key (0.00s)
+      --- PASS: TestTransientValidation/unknown_field (0.00s)
+      --- PASS: TestTransientValidation/short_salt (0.00s)
+      --- PASS: TestTransientValidation/uppercase_salt (0.00s)
+      --- PASS: TestTransientValidation/BIC_9_chars (0.00s)
+      --- PASS: TestTransientValidation/name_empty (0.00s)
+      --- PASS: TestTransientValidation/name_control_chars (0.00s)
+      --- PASS: TestTransientValidation/name_too_long (0.00s)
+  --- PASS: TestReadSettlementDetailsAccess (0.00s)
+  --- PASS: TestVerifySettlementDetails (0.00s)
+  --- PASS: TestCreateInputValidation (0.00s)
+  --- PASS: TestCancelPaths (0.00s)
+  --- PASS: TestPaginationAndHistory (0.00s)
+  --- PASS: TestInternalErrors (0.00s)
+  PASS
+  coverage: 96.2% of statements
+  ok  	github.com/yaikenov/hlf-pr4-variant1/chaincode/paymentsecure/chaincode	0.072s	coverage: 96.2% of statements
+  ✔ unit-тесты: 37 PASS, 0 FAIL
+  ✔ покрытие пакета chaincode: 96.2% (порог ≥ 85%)
+
+━━━━ go vet ━━━━
+  ✔ go vet — 0 замечаний
+
+━━━━ staticcheck ━━━━
+chaincode/harness_test.go:40:2: var initiatorB is unused (U1000)
+chaincode/model.go:39:2: only the first constant in this group has an explicit type (SA9004)
+  ⚠ staticcheck: 2 замечание(я) обоснованы: SA9004 — стиль объявления констант (int64 только у MaxAmount, остальные нетипизированные намеренно); U1000 — неиспользуемая тестовая фикстура в _test.go. Исправление изменило бы исходники уже развёрнутого пакета paymentsecure_1.0 (Package ID), поэтому принято как есть.
+  ✔ staticcheck — открытых замечаний нет (остальные обоснованы)
+
+━━━━ gosec (исключены сгенерированные mocks и тесты) ━━━━
+  ✔ gosec — 0 находок
+
+━━━━ govulncheck (уязвимости в достижимом коде зависимостей) ━━━━
+No vulnerabilities found.
+  ✔ govulncheck — уязвимостей в используемом коде нет
+
+━━━━ Детерминизм (SC09) ━━━━
+  ✔ time.Now (локальное время узла) — 0 находок
+  ✔ math/rand — 0 находок
+  ✔ crypto/rand (соль/nonce должен давать клиент) — 0 находок
+  ✔ горутины (go func / go call) — 0 находок
+  ✔ os.Getenv / переменные окружения — 0 находок
+  ✔ сетевые вызовы (net/http, net.Dial) — 0 находок
+  ✔ файловая система (os.ReadFile/os.Open) — 0 находок
+  ✔ InvokeChaincode (cross-chaincode, SC05/SC06) — 0 находок
+  ✔ глобальные изменяемые var — 0 (допустимы только regexp.MustCompile: неизменяемы после init)
+  ✔ итерация по map с выводом в state/ответ — 0 находок
+  ✔ ИТОГ: недетерминированных конструкций не найдено
+  ✔ check_determinism.sh — чисто
+
+  ══════ ИТОГ: 7 проверок пройдено, ошибок нет ✔ ══════

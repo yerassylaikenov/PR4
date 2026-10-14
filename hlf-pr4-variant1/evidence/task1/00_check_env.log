@@ -1,0 +1,25 @@
+# command : ./scripts/00_check_env.sh 
+# date    : 2026-10-14 10:26:25 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task1/00_check_env.log
+
+━━━━ Шаг 1. Проверка окружения ━━━━
+$ uname -a
+Linux YerassylAikenov 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+  ✔ WSL2: microsoft-standard-WSL2
+  ✔ ОС: Ubuntu 24.04.5 LTS
+  ✔ Docker Engine 29.8.2 (без sudo — пользователь yeras)
+  ✔ Docker Desktop WSL-интеграция активна
+  ✔ Docker Compose version v5.6.0
+  ✔ go version go1.27.2 linux/amd64
+  ✔ git: git version 2.43.0
+  ✔ jq: jq-1.7
+  ✔ curl: curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10
+  ✔ xxd: xxd 2023-10-25 by Juergen Weigert et al.
+  ✔ openssl: Invalid command '--version'; type "help" for a list.
+  ✔ Свободное место: 954 ГБ
+  ✔ RAM, доступная WSL: 3573 МБ
+  ✔ Репозиторий в Linux-ФС: /home/yeras/hlf-pr4-variant1
+
+  ══════ ИТОГ: 14 проверок пройдено, ошибок нет ✔ ══════

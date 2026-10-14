@@ -1,0 +1,7 @@
+NAMES                                                                                                           STATUS
+dev-peer0.org2.example.com-paymentsecure_1.0-55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985   Up 12 minutes
+dev-peer0.org1.example.com-paymentsecure_1.0-55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985   Up 12 minutes
+dev-peer0.org1.example.com-paymentvuln_1.0-18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268     Up 19 minutes
+dev-peer0.org2.example.com-paymentvuln_1.0-18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268     Up 19 minutes
+dev-peer0.org1.example.com-payment_1.0-41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748         Up 37 minutes
+dev-peer0.org2.example.com-payment_1.0-41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748         Up 37 minutes

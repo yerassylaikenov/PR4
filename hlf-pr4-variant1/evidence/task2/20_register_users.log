@@ -1,0 +1,77 @@
+# command : ./scripts/20_register_users.sh 
+# date    : 2026-10-14 11:28:58 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task2/20_register_users.log
+
+━━━━ initiator1 — Org1MSP (role=initiator) ━━━━
+$ fabric-ca-client register --caname ca-org1 --id.name initiator1 --id.secret [REDACTED] --id.type client --id.attrs role=initiator:ecert
+2026/10/14 11:28:59 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:28:59 [INFO] TLS Enabled
+2026/10/14 11:28:59 [INFO] TLS Enabled
+Password: [REDACTED]
+  ✔ зарегистрирован в ca-org1
+$ fabric-ca-client enroll -u https://initiator1:[REDACTED]@localhost:7054 --caname ca-org1 -M .../users/initiator1@org1.example.com/msp
+  ✔ enroll выполнен, NodeOUs config.yaml скопирован
+  subject=C = US, ST = North Carolina, O = Hyperledger, OU = client, CN = initiator1
+  issuer=C = US, ST = North Carolina, L = Durham, O = org1.example.com, CN = ca.org1.example.com
+  расширение 1.2.3.4.5.6.7.8.1 (attrs): {"attrs":{"hf.Affiliation":"","hf.EnrollmentID":"initiator1","hf.Type":"client","role":"initiator"}}
+  ✔ сертификат initiator1 содержит attrs.role=initiator
+
+━━━━ approver1 — Org1MSP (role=approver) ━━━━
+$ fabric-ca-client register --caname ca-org1 --id.name approver1 --id.secret [REDACTED] --id.type client --id.attrs role=approver:ecert
+2026/10/14 11:28:59 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:28:59 [INFO] TLS Enabled
+2026/10/14 11:28:59 [INFO] TLS Enabled
+Password: [REDACTED]
+  ✔ зарегистрирован в ca-org1
+$ fabric-ca-client enroll -u https://approver1:[REDACTED]@localhost:7054 --caname ca-org1 -M .../users/approver1@org1.example.com/msp
+  ✔ enroll выполнен, NodeOUs config.yaml скопирован
+  subject=C = US, ST = North Carolina, O = Hyperledger, OU = client, CN = approver1
+  issuer=C = US, ST = North Carolina, L = Durham, O = org1.example.com, CN = ca.org1.example.com
+  расширение 1.2.3.4.5.6.7.8.1 (attrs): {"attrs":{"hf.Affiliation":"","hf.EnrollmentID":"approver1","hf.Type":"client","role":"approver"}}
+  ✔ сертификат approver1 содержит attrs.role=approver
+
+━━━━ norole1 — Org1MSP  ━━━━
+$ fabric-ca-client register --caname ca-org1 --id.name norole1 --id.secret [REDACTED] --id.type client 
+2026/10/14 11:29:00 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:29:00 [INFO] TLS Enabled
+2026/10/14 11:29:00 [INFO] TLS Enabled
+Password: [REDACTED]
+  ✔ зарегистрирован в ca-org1
+$ fabric-ca-client enroll -u https://norole1:[REDACTED]@localhost:7054 --caname ca-org1 -M .../users/norole1@org1.example.com/msp
+  ✔ enroll выполнен, NodeOUs config.yaml скопирован
+  subject=C = US, ST = North Carolina, O = Hyperledger, OU = client, CN = norole1
+  issuer=C = US, ST = North Carolina, L = Durham, O = org1.example.com, CN = ca.org1.example.com
+  расширение 1.2.3.4.5.6.7.8.1 (attrs): {"attrs":{"hf.Affiliation":"","hf.EnrollmentID":"norole1","hf.Type":"client"}}
+  ✔ сертификат norole1 НЕ содержит атрибута role (негативный тест)
+
+━━━━ processor2 — Org2MSP (role=processor) ━━━━
+$ fabric-ca-client register --caname ca-org2 --id.name processor2 --id.secret [REDACTED] --id.type client --id.attrs role=processor:ecert
+2026/10/14 11:29:00 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:29:00 [INFO] TLS Enabled
+2026/10/14 11:29:00 [INFO] TLS Enabled
+Password: [REDACTED]
+  ✔ зарегистрирован в ca-org2
+$ fabric-ca-client enroll -u https://processor2:[REDACTED]@localhost:8054 --caname ca-org2 -M .../users/processor2@org2.example.com/msp
+  ✔ enroll выполнен, NodeOUs config.yaml скопирован
+  subject=C = US, ST = North Carolina, O = Hyperledger, OU = client, CN = processor2
+  issuer=C = UK, ST = Hampshire, L = Hursley, O = org2.example.com, CN = ca.org2.example.com
+  расширение 1.2.3.4.5.6.7.8.1 (attrs): {"attrs":{"hf.Affiliation":"","hf.EnrollmentID":"processor2","hf.Type":"client","role":"processor"}}
+  ✔ сертификат processor2 содержит attrs.role=processor
+
+━━━━ Хранение секретов ━━━━
+  -rw------- approver1.secret
+  -rw------- initiator1.secret
+  -rw------- norole1.secret
+  -rw------- processor2.secret
+  ✔ .secrets/*.secret имеют права 600
+  ✔ .secrets/ в .gitignore
+
+━━━━ Переключение пользователя: ORG_USER=<user> source scripts/env_orgN.sh ━━━━
+  ✔ ORG_USER=initiator1 → Org1MSP, MSP найден
+  ✔ ORG_USER=approver1 → Org1MSP, MSP найден
+  ✔ ORG_USER=norole1 → Org1MSP, MSP найден
+  ✔ ORG_USER=processor2 → Org2MSP, MSP найден
+
+  ══════ ИТОГ: 18 проверок пройдено, ошибок нет ✔ ══════

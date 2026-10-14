@@ -1,0 +1,72 @@
+# command : ./scripts/36_compat_check.sh 
+# date    : 2026-10-14 12:01:33 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/36_compat.log
+
+━━━━ Определение: version 2.0, sequence 2 ━━━━
+
+━━━━ C1 — ReadPaymentOrder(PO-0001), созданного и исполненного v1.0 ━━━━
+  {"docType":"PaymentOrder","id":"PO-0001","senderBankMSP":"Org1MSP","receiverBankMSP":"Org2MSP","amount":5000000,"currency":"KZT","purposeCode":"119","reference":"Оплата по счёту №42 за услуги","status":"SETTLED","createdByHash":"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e","createdAt":"2026-10-14T06:14:31Z","updatedAt":"2026-10-14T06:14:38Z","lastTxId":"6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea"}
+  ✔ C1: JSON идентичен снимку v1 (diff пуст); schemaVersion отсутствует → трактуется как 1
+
+━━━━ C2 — GetAllPaymentOrders → state_after.json; сравнение со state_v1.json до первой записи через v2.0 ━━━━
+  sha256 state_v1.json    = 69f0ea3b7778c52a39e44802cca560a0d3839253af992d9da08f9e4b5bf7e480
+  sha256 state_after.json = 69f0ea3b7778c52a39e44802cca560a0d3839253af992d9da08f9e4b5bf7e480
+  ✔ C2: World State после смены пакета идентичен (sha256 и diff совпадают)
+
+━━━━ C3 — старые операции v1.0 над PO-0003 (создан v1.0): Submit → Accept → Settle ━━━━
+  ✔ Submit PO-0003 → committed with status (VALID)  TxID=7aeadc7424c1e57cb37ba5d40aea149c5629abf0b229ee75d8c36392fcb8ef04
+  ✔ Accept PO-0003 → committed with status (VALID)  TxID=25cd07a46b7d7998f6d49c5e7294f7c467a464f8576d637785aa983c9a8b6127
+  ✔ Settle PO-0003 → committed with status (VALID)  TxID=bb508e5e995e94a26423c769727347a4f3949c6325cbd15bf3b3192f0cd4ac39
+  ✔ C3: PO-0003 SETTLED, после первой записи через v2.0 получил schemaVersion: 2 (ленивая миграция)
+
+━━━━ C4 — новая функция v2.0: ReturnPaymentOrder(PO-0001) ━━━━
+  ✔ Return PO-0001 → committed with status (VALID)  TxID=eb1cf454ae93377ee7533c61132014f1631727a9767be233dbb54d1a71a06395
+  {"status":"RETURNED","returnReason":"ACCOUNT_CLOSED","returnedAt":"2026-10-14T07:01:41Z","schemaVersion":2,"amount":5000000}
+  ✔ C4: PO-0001 RETURNED
+
+━━━━ C5 — повторный Return PO-0001 ━━━━
+  ✔ C5 повторный Return → отклонено, как и ожидалось: ERR_INVALID_TRANSITION: transition RETURNED -> RETURNED is not allowed
+
+━━━━ C6 — GetPaymentOrdersByStatus(SETTLED) — rich query по индексу indexStatus ━━━━
+  найдено: PO-0003
+  ✔ C6: найден PO-0003 (объект v1.0, исполненный через v2.0)
+  ✔ попытка инъекции в селектор отклонена: ERR_VALIDATION (SC04)
+
+━━━━ C7 — новый PO-0006 через v2.0, полный цикл (+ SetValueDate) ━━━━
+  ✔ Create PO-0006 → committed with status (VALID)  TxID=4263c8bcdbcae5cbb3a8d47362ce2320e604602e764e42a06a498d33f9e12a02
+  ✔ SetValueDate PO-0006 = 2026-10-14 → committed with status (VALID)  TxID=e09db0139247c79ecaded03da098a223280fbd4cead64bc1635dbc9b9f11144f
+  ✔ Submit PO-0006 → committed with status (VALID)  TxID=e1544d7dbe0bbc4f08d7ec074c4d50eddcfa5aefe2d4650b3d0cbc6420aa0b60
+  ✔ Accept PO-0006 → committed with status (VALID)  TxID=b3545a6b03fce84ac358344506c544c6a97d6ef19ab37f6bd96e3464d14113b0
+  ✔ Settle PO-0006 → committed with status (VALID)  TxID=72a38c3f85f95efdcb94f010226341a1fe455a6338eb4c88a251d5ae70269864
+  {"id":"PO-0006","status":"SETTLED","valueDate":"2026-10-14","schemaVersion":2}
+  ✔ C7: PO-0006 SETTLED, schemaVersion 2, valueDate 2026-10-14
+
+━━━━ C8 — GetPaymentOrderHistory(PO-0001): TxID версии 1.0 и 2.0 в одной истории ━━━━
+  eb1cf454ae93377ee7533c61132014f1631727a9767be233dbb54d1a71a06395  RETURNED  schemaVersion=2
+  6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea  SETTLED  schemaVersion=нет (v1.0)
+  bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6  ACCEPTED  schemaVersion=нет (v1.0)
+  8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681  SUBMITTED  schemaVersion=нет (v1.0)
+  d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a  CREATED  schemaVersion=нет (v1.0)
+  ✔ C8: в истории T1–T4 (v1.0) и Return eb1cf454ae93377ee7533c61132014f1631727a9767be233dbb54d1a71a06395 (v2.0)
+
+━━━━ C9 — Return от Org1 (не банк-получатель) ━━━━
+  ✔ C9 Return от Org1 → отклонено, как и ожидалось: ERR_UNAUTHORIZED: caller organisation is not allowed to move PO-0006 to RETURNED
+
+━━━━ Таблица совместимости → evidence/task3/compat_table.md ━━━━
+# Проверка обратной совместимости payment 2.0 (C1–C9)
+
+| Проверка | Действие через v2.0 | Ожидание | Факт | TxID | Итог |
+|---|---|---|---|---|---|
+| C1 | ReadPaymentOrder(PO-0001) через v2.0 | идентично снимку v1 | diff пуст, `schemaVersion` отсутствует | - | **PASS** |
+| C2 | GetAllPaymentOrders → state_after.json | sha256 = state_v1 | `69f0ea3b7778c52a…` = `69f0ea3b7778c52a…` | - | **PASS** |
+| C3 | Submit → Accept → Settle PO-0003 (объект v1.0) | VALID, затем schemaVersion 2 | VALID ×3, schemaVersion=2 | `7aeadc7424c1…` `25cd07a46b7d…` `bb508e5e995e…` | **PASS** |
+| C4 | ReturnPaymentOrder(PO-0001) | VALID, RETURNED | VALID, RETURNED, returnReason=ACCOUNT_CLOSED | `eb1cf454ae93377e…` | **PASS** |
+| C5 | повторный Return PO-0001 | отказ | ERR_INVALID_TRANSITION: transition RETURNED -> RETURNED is not allowed | - | **PASS** |
+| C6 | GetPaymentOrdersByStatus(SETTLED) | находит PO-0003 | PO-0003 | - | **PASS** |
+| C7 | PO-0006: Create, SetValueDate, Submit, Accept, Settle | VALID | VALID ×5, SETTLED | `72a38c3f85f95efd…` | **PASS** |
+| C8 | GetPaymentOrderHistory(PO-0001) | TxID v1.0 и v2.0 | T1–T4 (v1.0) + C4 Return (v2.0) | - | **PASS** |
+| C9 | Return PO-0006 от Org1MSP | отказ (SC01) | ERR_UNAUTHORIZED: caller organisation is not allowed to move PO-0006 to RETURN | - | **PASS** |
+
+  ══════ ИТОГ: 19 проверок пройдено, ошибок нет ✔ ══════

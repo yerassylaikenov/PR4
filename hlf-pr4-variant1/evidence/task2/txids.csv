@@ -1,0 +1,9 @@
+n,function,args,invoker,txid,block,validation_code
+V1,CreatePaymentOrder,PO-V001; Org2MSP; 250000000; KZT; 119; Оплата по договору поставки 7/2026,Org1MSP/initiator1,aec25bf324b0dcc150da24a002902ea9313ffc600b23ba0e7cd963df87aa5bb9,21,VALID
+V2,SubmitPaymentOrder,PO-V001,Org2MSP/processor2,e4545b3d0965b2b4dfc8c3174c3f58229c1d16c6dd33d6f21c4b110ac6824fe5,22,VALID
+V3,AcceptPaymentOrder,PO-V001,Org2MSP/processor2,1849dc33a9b343de06e674641168241b30b5ac731e8faf4daecfe3e52eae6f0c,23,VALID
+V4,SettlePaymentOrder,PO-V001,Org2MSP/processor2,cc728cfaf332db86f8b71677b875176870ee089c8bd08a0da5d3bc359232a4dd,24,VALID
+S1,CreatePaymentOrder,PO-S001; Org2MSP; 870000000; KZT; 119; Оплата по контракту 2026/45,Org1MSP/initiator1,28a68a396bfa6fc656f2ff85be63588f15d667a95f4523048bc2bd10a623231f,25,VALID
+S2,SetSettlementDetails,PO-S001,Org1MSP/initiator1,e3cc9aaad4cb4393e5d47beb15ce3146a3bb25d3adb45a9346b4ea104cf22551,26,VALID
+S3,CreatePaymentOrder,PO-S002; Org2MSP; 15000000; KZT; 119; Оплата услуг связи,Org1MSP/initiator1,01f6e8d3d83b8c183ab737067f3367aeed68d8de28146abfe536f703f8228921,27,VALID
+S4,SetSettlementDetails (Gateway),PO-S002,Org1MSP/initiator1,6ef28f98c5e9cd4c5b3b18d166c2182dc8c478f64ce070ab9a816b11a8a8611f,28,VALID

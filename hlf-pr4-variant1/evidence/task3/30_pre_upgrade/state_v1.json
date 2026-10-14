@@ -1,0 +1,62 @@
+[
+  {
+    "amount": 5000000,
+    "createdAt": "2026-10-14T06:14:31Z",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "currency": "KZT",
+    "docType": "PaymentOrder",
+    "id": "PO-0001",
+    "lastTxId": "6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea",
+    "purposeCode": "119",
+    "receiverBankMSP": "Org2MSP",
+    "reference": "Оплата по счёту №42 за услуги",
+    "senderBankMSP": "Org1MSP",
+    "status": "SETTLED",
+    "updatedAt": "2026-10-14T06:14:38Z"
+  },
+  {
+    "amount": 120000000,
+    "createdAt": "2026-10-14T06:14:40Z",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "currency": "USD",
+    "docType": "PaymentOrder",
+    "id": "PO-0002",
+    "lastTxId": "499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba",
+    "purposeCode": "710",
+    "receiverBankMSP": "Org2MSP",
+    "reference": "Импорт оборудования, контракт 2026/17",
+    "senderBankMSP": "Org1MSP",
+    "status": "CANCELLED",
+    "updatedAt": "2026-10-14T06:14:43Z"
+  },
+  {
+    "amount": 75000000,
+    "createdAt": "2026-10-14T06:14:45Z",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "currency": "KZT",
+    "docType": "PaymentOrder",
+    "id": "PO-0003",
+    "lastTxId": "43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67",
+    "purposeCode": "342",
+    "receiverBankMSP": "Org2MSP",
+    "reference": "Возврат займа по договору 15-К",
+    "senderBankMSP": "Org1MSP",
+    "status": "CREATED",
+    "updatedAt": "2026-10-14T06:14:45Z"
+  },
+  {
+    "amount": 990000,
+    "createdAt": "2026-10-14T06:14:48Z",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "currency": "EUR",
+    "docType": "PaymentOrder",
+    "id": "PO-0005",
+    "lastTxId": "0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3",
+    "purposeCode": "119",
+    "receiverBankMSP": "Org2MSP",
+    "reference": "MVCC demo",
+    "senderBankMSP": "Org1MSP",
+    "status": "CANCELLED",
+    "updatedAt": "2026-10-14T06:14:50Z"
+  }
+]

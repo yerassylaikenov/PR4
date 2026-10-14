@@ -1,0 +1,93 @@
+# command : ./scripts/23_private_data_flow.sh 
+# date    : 2026-10-14 11:44:19 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=initiator1
+# log     : evidence/task2/23_private_flow.log
+
+━━━━ 1. initiator1 (Org1) создаёт PO-S001 — публичная транзакция, endorse обоими peers (AND) ━━━━
+  2026-10-14 11:44:22.220 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [28a68a396bfa6fc656f2ff85be63588f15d667a95f4523048bc2bd10a623231f] committed with status (VALID) at localhost:7051
+  2026-10-14 11:44:22.235 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [28a68a396bfa6fc656f2ff85be63588f15d667a95f4523048bc2bd10a623231f] committed with status (VALID) at localhost:9051
+  ✔ S1 Create PO-S001 → committed with status (VALID)  TxID=28a68a396bfa6fc656f2ff85be63588f15d667a95f4523048bc2bd10a623231f
+
+━━━━ 2. SetSettlementDetails(PO-S001): реквизиты ТОЛЬКО в transient, endorse ТОЛЬКО peer0.org1 ━━━━
+  реквизиты (маскированы): payerIBAN=KZ**************0001 beneficiaryIBAN=KZ**************0002 BIN=99******0001 salt=<32 байта hex, клиент>
+$ peer chaincode invoke -C paymentchannel -n paymentsecure -c {"function":"SetSettlementDetails","Args":["PO-S001"]} --peerAddresses localhost:7051 --transient {"settlement":"<base64, не выводится>"}
+  2026-10-14 11:44:24.784 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [e3cc9aaad4cb4393e5d47beb15ce3146a3bb25d3adb45a9346b4ea104cf22551] committed with status (VALID) at localhost:7051
+  ✔ S2 SetSettlementDetails PO-S001 (endorser: только peer0.org1, collection EP OR('Org1MSP.peer')) → committed with status (VALID)  TxID=e3cc9aaad4cb4393e5d47beb15ce3146a3bb25d3adb45a9346b4ea104cf22551
+
+━━━━ 3. Альтернатива через Fabric Gateway: WithTransient + WithEndorsingOrganizations(Org1MSP) ━━━━
+  ✔ S3 Create PO-S002 → committed with status (VALID)  TxID=01f6e8d3d83b8c183ab737067f3367aeed68d8de28146abfe536f703f8228921
+  Gateway   : peer0.org1.example.com (gRPC+TLS, localhost:7051)
+  Identity  : Org1MSP / initiator1
+  Call      : submit paymentsecure.SetSettlementDetails(PO-S002)
+  Transient : keys=settlement (values not printed)
+  TxID      : 6ef28f98c5e9cd4c5b3b18d166c2182dc8c478f64ce070ab9a816b11a8a8611f
+  Status    : VALID (code 0)
+  Block     : 28
+  Result    : 
+  ✔ S4 SetSettlementDetails PO-S002 через Gateway → committed with status (VALID)  TxID=6ef28f98c5e9cd4c5b3b18d166c2182dc8c478f64ce070ab9a816b11a8a8611f
+
+━━━━ 4. Доказательство: аргументы и блок транзакции SetSettlementDetails ━━━━
+  блок #26, tx[0] e3cc9aaad4cb4393e5d47beb15ce3146a3bb25d3adb45a9346b4ea104cf22551
+  аргументы транзакции: SetSettlementDetails PO-S001 
+  ✔ аргументы содержат только имя функции и PO-S001
+  ✔ TransientMap в блоке отсутствует (peer удаляет transient из proposal payload)
+  ns_rwset:
+    namespace=_lifecycle public_writes=0 collections=
+    namespace=paymentsecure public_writes=0 collections=collectionSettlementDetails
+jq: error (at /tmp/tmp.hiHeGZ1vti/block.json:186): Cannot index string with string "hashed_writes"
+# --- продолжение (resumed run) ---
+# command : ./scripts/23_private_data_flow.sh 
+# date    : 2026-10-14 11:45:27 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=initiator1
+# log     : evidence/task2/23_private_flow.log
+  ➜ шаги 1–3 уже выполнены (PO-S001 существует) — TxID из evidence/task2/txids.csv, выполняются проверки 4–8
+
+━━━━ 4. Доказательство: аргументы и блок транзакции SetSettlementDetails ━━━━
+  блок #26, tx[0] e3cc9aaad4cb4393e5d47beb15ce3146a3bb25d3adb45a9346b4ea104cf22551
+  аргументы транзакции: SetSettlementDetails PO-S001 
+  ✔ аргументы содержат только имя функции и PO-S001
+  ✔ TransientMap в блоке отсутствует (peer удаляет transient из proposal payload)
+  ns_rwset:
+    namespace=_lifecycle public_writes=0 collections=
+    namespace=paymentsecure public_writes=0 collections=collectionSettlementDetails
+    hashed write: key_hash=WsnIbri6dxWzYEEwSXD6qi7J3aHNX87rLjkNik9PoEw=  value_hash=0rJo0ilC5qjDOdCMLhgNork3wO/BuBI1atXOfX+Ozp4=  is_delete=false
+  ✔ публичных записей нет — только collection_hashed_rwset (хэш ключа и хэш значения)
+  endorsements: 1
+  ✔ одна endorsement (peer0.org1) и статус VALID — сработала collection-level EP OR('Org1MSP.peer')
+
+━━━━ 5. grep -c маркеров реквизитов: сырой блок (.pb), decoded JSON, все base64-поля блока ━━━━
+  KZ**************0001         raw.pb=0  decoded.json=0  base64-decoded=0
+  KZ**************0002         raw.pb=0  decoded.json=0  base64-decoded=0
+  99******0001                 raw.pb=0  decoded.json=0  base64-decoded=0
+  TO*******************IARY    raw.pb=0  decoded.json=0  base64-decoded=0
+  KZ**************0004         raw.pb=0  decoded.json=0  base64-decoded=0
+  контроль метода: grep -c -a PO-S001 raw.pb = 2 (открытый аргумент находится)
+  ✔ реквизиты в блоке: 0 совпадений (метод поиска проверен положительным контролем)
+
+━━━━ 6. CouchDB: базы paymentsecure на peer0.org1 и peer0.org2 ━━━━
+  peer0.org1 (couchdb0:5984): paymentchannel_paymentsecure  paymentchannel_paymentsecure$$hcollection$settlement$details  paymentchannel_paymentsecure$$pcollection$settlement$details
+  peer0.org2 (couchdb1:7984): paymentchannel_paymentsecure  paymentchannel_paymentsecure$$hcollection$settlement$details
+  ✔ Org1: есть $$p (открытые private data) и $$h (хэши)
+  ✔ Org2: только $$h — открытых реквизитов у банка-получателя нет
+  пример документа в $$h на Org2 (ключ = хэш ключа, значение = хэш значения):
+    {"_id":"BEJc34IlE36u2KLmNyGKPmtQTcOzUcHt7VLELOp5UJk=","valueHash":"CgMBHAA="}
+    {"_id":"WsnIbri6dxWzYEEwSXD6qi7J3aHNX87rLjkNik9PoEw=","valueHash":"CgMBGgA="}
+  ✔ CouchDB Org2 (публичная база + $$h): 0 совпадений маркеров
+  ✔ публичная база paymentsecure на Org1: 0 совпадений (реквизиты только в $$p)
+  ✔ положительный контроль: $$p на Org1 содержит реквизиты (значения не выводятся)
+
+━━━━ 7. Логи контейнеров: peer0.org1, peer0.org2, orderer, контейнеры chaincode paymentsecure ━━━━
+  peer0.org1.example.com                                                                     0 совпадений
+  peer0.org2.example.com                                                                     0 совпадений
+  orderer.example.com                                                                        0 совпадений
+  dev-peer0.org2.example.com-paymentsecure_1.0-55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985 0 совпадений
+  dev-peer0.org1.example.com-paymentsecure_1.0-55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985 0 совпадений
+  ✔ логи всех контейнеров: 0 совпадений маркеров реквизитов
+
+━━━━ 8. ReadSettlementDetails от initiator1 на peer0.org1 (в отчёте — маскированно) ━━━━
+  id=PO-S001 payerIBAN=KZ**************0001 payerBIN=99******0001 beneficiaryIBAN=KZ**************0002 beneficiaryBIC=TEST**** beneficiaryName=TOO***
+  ✔ Org1 (initiator1) получила реквизиты из private data; соль не возвращается: false
+
+  ══════ ИТОГ: 12 проверок пройдено, ошибок нет ✔ ══════

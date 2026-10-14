@@ -1,0 +1,15 @@
+{
+  "amount": 120000000,
+  "createdAt": "2026-10-14T06:14:40Z",
+  "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+  "currency": "USD",
+  "docType": "PaymentOrder",
+  "id": "PO-0002",
+  "lastTxId": "499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba",
+  "purposeCode": "710",
+  "receiverBankMSP": "Org2MSP",
+  "reference": "Импорт оборудования, контракт 2026/17",
+  "senderBankMSP": "Org1MSP",
+  "status": "CANCELLED",
+  "updatedAt": "2026-10-14T06:14:43Z"
+}

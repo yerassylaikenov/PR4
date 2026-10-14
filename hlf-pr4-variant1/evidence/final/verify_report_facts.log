@@ -1,0 +1,20 @@
+# command : ./scripts/verify_report_facts.sh 
+# date    : 2026-10-14 13:01:17 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/final/verify_report_facts.log
+
+━━━━ Package ID ━━━━
+
+━━━━ Полные TxID / хэши (64 hex) ━━━━
+
+━━━━ Сокращённые TxID (префикс ≥ 8 hex перед «…») ━━━━
+
+━━━━ Хэши блоков (base64) ━━━━
+
+━━━━ Высоты и номера блоков из ключевых утверждений ━━━━
+
+  найдено: 61, не найдено: 0 → /home/yeras/hlf-pr4-variant1/evidence/final/verify_report_facts.md
+  ✔ все 61 значений из REPORT.md дословно присутствуют в evidence/
+
+  ══════ ИТОГ: 1 проверок пройдено, ошибок нет ✔ ══════

@@ -1,0 +1,85 @@
+# command : ./scripts/10_transactions.sh 
+# date    : 2026-10-14 10:58:28 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task1/10_transactions.log
+
+━━━━ Задание 1.5 — транзакции chaincode payment v1.0 (канал paymentchannel) ━━━━
+
+[T1] Create PO-0001 (5 000 000 тиын, KZT, КНП 119) — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0001","Org2MSP","5000000","KZT","119","Оплата по счёту №42 за услуги"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"error handling success response. value did not match schema:\n1. return: rejectReason is required"
+  ✘ T1 Create PO-0001 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"error handling success response. value did not match schema:\n1. return: rejectReason is required"
+
+[T2] Submit PO-0001 (авторизация списания) — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"SubmitPaymentOrder","Args":["PO-0001"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0001 does not exist"
+  ✘ T2 Submit PO-0001 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0001 does not exist"
+
+[T3] Accept PO-0001 (банк-получатель) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"AcceptPaymentOrder","Args":["PO-0001"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0001 does not exist"
+  ✘ T3 Accept PO-0001 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0001 does not exist"
+
+[T4] Settle PO-0001 — ОСНОВНАЯ БИЗНЕС-ОПЕРАЦИЯ (исполнение платежа) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"SettlePaymentOrder","Args":["PO-0001"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0001 does not exist"
+  ✘ T4 Settle PO-0001 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0001 does not exist"
+
+━━━━ T5 через Fabric Gateway (Go, fabric-gateway SDK) — компонент Gateway на схеме реален ━━━━
+$ client/payment-client -org 1 -user Admin submit payment CreatePaymentOrder PO-0002 Org2MSP 120000000 USD 710 "..."
+  Gateway   : peer0.org1.example.com (gRPC+TLS, localhost:7051)
+  Identity  : Org1MSP / Admin
+  Call      : submit payment.CreatePaymentOrder(PO-0002, Org2MSP, 120000000, USD, 710, Импорт оборудования, контракт 2026/17)
+  ERROR     : endorse error: rpc error: code = Aborted desc = failed to endorse transaction, see attached details for more info
+  Details:
+    - Address: peer0.org1.example.com:7051
+      MspId: Org1MSP
+      Message: chaincode response 500, error handling success response. value did not match schema:
+  1. return: rejectReason is required
+    peer peer0.org1.example.com:7051 (Org1MSP): chaincode response 500, error handling success response. value did not match schema:
+  1. return: rejectReason is required
+  ✘ T5 Create PO-0002 via Gateway (block -) → UNKNOWN
+      ERROR     : endorse error: rpc error: code = Aborted desc = failed to endorse transaction, see attached details for more info
+          Message: chaincode response 500, error handling success response. value did not match schema:
+        peer peer0.org1.example.com:7051 (Org1MSP): chaincode response 500, error handling success response. value did not match schema:
+
+[T6] Cancel PO-0002 — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CancelPaymentOrder","Args":["PO-0002"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0002 does not exist"
+  ✘ T6 Cancel PO-0002 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0002 does not exist"
+
+[T7] Create PO-0003 (остаётся в CREATED для Задания 3) — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0003","Org2MSP","75000000","KZT","342","Возврат займа по договору 15-К"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"error handling success response. value did not match schema:\n1. return: rejectReason is required"
+  ✘ T7 Create PO-0003 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"error handling success response. value did not match schema:\n1. return: rejectReason is required"
+
+━━━━ Негативные сценарии — отказ на этапе endorsement (в ledger не попадают) ━━━━
+
+[N1] Settle PO-0003 из CREATED (недопустимый переход) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"SettlePaymentOrder","Args":["PO-0003"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0003 does not exist"
+  ✘ N1 Settle PO-0003 → ожидался отказ с 'ERR_INVALID_TRANSITION', фактически: REJECTED_AT_ENDORSEMENT
+      2026-10-14 10:58:30.633 +05 0001 INFO [chaincodeCmd] InitCmdFactory -> InitCmdFactory: Entry: invoke, true, true
+      Error: endorsement failure during invoke. response: status:500 message:"ERR_NOT_FOUND: payment order PO-0003 does not exist"
+
+[N2] Create PO-0004 от Org2 (банк-получатель не создаёт поручения) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0004","Org1MSP","100","KZT","119","Попытка от Org2"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_UNAUTHORIZED: caller organisation may not create payment orders"
+  ✔ N2 Create PO-0004 by Org2 → отклонено, как и ожидалось: ERR_UNAUTHORIZED: caller organisation may not create payment orders
+  ✔ PO-0004 отсутствует в World State
+  ✔ N1/N2: блок не создан (TxID не попал в ledger)
+
+━━━━ Демонстрация MVCC: Submit и Cancel одного ключа PO-0005 параллельно ━━━━
+
+[T8] Create PO-0005 — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0005","Org2MSP","990000","EUR","119","MVCC demo"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"error handling success response. value did not match schema:\n1. return: rejectReason is required"
+  ✘ T8 Create PO-0005 (block -) → REJECTED_AT_ENDORSEMENT
+      Error: endorsement failure during invoke. response: status:500 message:"error handling success response. value did not match schema:\n1. return: rejectReason is required"

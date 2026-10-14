@@ -1,0 +1,82 @@
+[
+  {
+    "txId": "6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea",
+    "timestamp": "2026-10-14T06:14:38Z",
+    "isDelete": false,
+    "value": {
+      "docType": "PaymentOrder",
+      "id": "PO-0001",
+      "senderBankMSP": "Org1MSP",
+      "receiverBankMSP": "Org2MSP",
+      "amount": 5000000,
+      "currency": "KZT",
+      "purposeCode": "119",
+      "reference": "Оплата по счёту №42 за услуги",
+      "status": "SETTLED",
+      "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+      "createdAt": "2026-10-14T06:14:31Z",
+      "updatedAt": "2026-10-14T06:14:38Z",
+      "lastTxId": "6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea"
+    }
+  },
+  {
+    "txId": "bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6",
+    "timestamp": "2026-10-14T06:14:36Z",
+    "isDelete": false,
+    "value": {
+      "docType": "PaymentOrder",
+      "id": "PO-0001",
+      "senderBankMSP": "Org1MSP",
+      "receiverBankMSP": "Org2MSP",
+      "amount": 5000000,
+      "currency": "KZT",
+      "purposeCode": "119",
+      "reference": "Оплата по счёту №42 за услуги",
+      "status": "ACCEPTED",
+      "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+      "createdAt": "2026-10-14T06:14:31Z",
+      "updatedAt": "2026-10-14T06:14:36Z",
+      "lastTxId": "bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6"
+    }
+  },
+  {
+    "txId": "8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681",
+    "timestamp": "2026-10-14T06:14:33Z",
+    "isDelete": false,
+    "value": {
+      "docType": "PaymentOrder",
+      "id": "PO-0001",
+      "senderBankMSP": "Org1MSP",
+      "receiverBankMSP": "Org2MSP",
+      "amount": 5000000,
+      "currency": "KZT",
+      "purposeCode": "119",
+      "reference": "Оплата по счёту №42 за услуги",
+      "status": "SUBMITTED",
+      "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+      "createdAt": "2026-10-14T06:14:31Z",
+      "updatedAt": "2026-10-14T06:14:33Z",
+      "lastTxId": "8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681"
+    }
+  },
+  {
+    "txId": "d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a",
+    "timestamp": "2026-10-14T06:14:31Z",
+    "isDelete": false,
+    "value": {
+      "docType": "PaymentOrder",
+      "id": "PO-0001",
+      "senderBankMSP": "Org1MSP",
+      "receiverBankMSP": "Org2MSP",
+      "amount": 5000000,
+      "currency": "KZT",
+      "purposeCode": "119",
+      "reference": "Оплата по счёту №42 за услуги",
+      "status": "CREATED",
+      "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+      "createdAt": "2026-10-14T06:14:31Z",
+      "updatedAt": "2026-10-14T06:14:31Z",
+      "lastTxId": "d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a"
+    }
+  }
+]

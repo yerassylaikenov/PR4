@@ -1,0 +1,67 @@
+# command : ./scripts/04_cli_env_org1.sh 
+# date    : 2026-10-14 12:15:49 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task1/04_cli_env_org1.log
+
+━━━━ Задание 1.2 — CLI-окружение Org1 (source scripts/env_org1.sh) ━━━━
+  CORE_PEER_TLS_ENABLED=true
+  CORE_PEER_LOCALMSPID=Org1MSP
+  CORE_PEER_ADDRESS=localhost:7051
+  CORE_PEER_MSPCONFIGPATH=.../peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+  CORE_PEER_TLS_ROOTCERT_FILE=.../org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+  ORDERER_CA=.../ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+  FABRIC_CFG_PATH=/home/yeras/hlf-pr4-variant1/fabric-samples/config
+$ peer version
+peer:
+ Version: v3.1.5
+ Commit SHA: 86c1172
+ Go version: go1.26.4
+ OS/Arch: linux/amd64
+ Chaincode:
+  Base Docker Label: org.hyperledger.fabric
+  Docker Namespace: hyperledger
+
+  ✔ peer CLI Fabric 3.1.x
+
+━━━━ Работа с Peer (peer0.org1.example.com:7051) ━━━━
+$ peer channel list
+2026-10-14 12:15:49.711 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Channels peers has joined: 
+paymentchannel
+  ✔ Admin@org1 видит канал paymentchannel на peer0.org1
+$ peer channel getinfo -c paymentchannel
+2026-10-14 12:15:49.867 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Blockchain info: {"height":64,"currentBlockHash":"pvthqFOPl0vrLbxyVbdhyfPTTARJGfZmGXeHcT+HKrA=","previousBlockHash":"jQiQQ/426cv+nqkQjrSzkQNz3bpf9UMXD3BA5lix8Rc="}
+  ✔ peer channel getinfo — доступ к ledger канала
+
+━━━━ Работа с Ordering Service (orderer.example.com:7050) ━━━━
+$ peer channel fetch config /tmp/tmp.Um7bgdY07g/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c paymentchannel --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 12:15:50.026 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 12:15:50.032 +05 0002 INFO [cli.common] readBlock -> Received block: 63
+2026-10-14 12:15:50.032 +05 0003 INFO [channelCmd] fetch -> Retrieving last config block: 2
+2026-10-14 12:15:50.038 +05 0004 INFO [cli.common] readBlock -> Received block: 2
+  ✔ конфигурационный блок #2 получен от Ordering Service
+  Организации канала (Application):  Org1MSP, Org2MSP
+  Организации Ordering Service:      OrdererOrg
+  ConsensusType:                     etcdraft
+  Channel capabilities:              V2_0
+  Application capabilities:          V2_5
+
+━━━━ Административная идентичность Org1 (только subject / issuer / даты — без ключа и PEM) ━━━━
+$ openssl x509 -noout -subject -issuer -dates -in /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem
+subject=C = US, ST = North Carolina, O = Hyperledger, OU = admin, CN = org1admin
+issuer=C = US, ST = North Carolina, L = Durham, O = org1.example.com, CN = ca.org1.example.com
+notBefore=Oct 14 06:07:00 2026 GMT
+notAfter=Oct 14 06:12:00 2027 GMT
+  ✔ сертификат содержит OU=admin (NodeOU: роль администратора)
+  NodeOUs (msp/config.yaml):
+      Enable: true
+        OrganizationalUnitIdentifier: client
+        OrganizationalUnitIdentifier: peer
+        OrganizationalUnitIdentifier: admin
+        OrganizationalUnitIdentifier: orderer
+  ✔ NodeOUs: AdminOUIdentifier = admin
+  ✔ keystore/ присутствует (содержимое не выводится)
+
+  ══════ ИТОГ: 7 проверок пройдено, ошибок нет ✔ ══════

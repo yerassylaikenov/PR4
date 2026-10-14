@@ -1,0 +1,125 @@
+# command : scripts/lifecycle.sh -n paymentsecure -p chaincode/payment-secure -v 1.0 -s 1 -l paymentsecure_1.0 -c collections/collections_config.json -C paymentchannel
+# date    : 2026-10-14 11:42:27 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task2/24_lifecycle_paymentsecure_verify.log
+
+━━━━ Lifecycle: paymentsecure v1.0, sequence 1, канал paymentchannel ━━━━
+  Endorsement Policy : AND('Org1MSP.peer','Org2MSP.peer')
+  Collections config : collections/collections_config.json
+
+━━━━ 1. go mod vendor (chaincode/payment-secure) ━━━━
+  ✔ зависимости завендорены (844 файлов .go)
+
+━━━━ 2. Package ━━━━
+$ peer lifecycle chaincode package /home/yeras/hlf-pr4-variant1/build/paymentsecure_1.0.tar.gz --path /home/yeras/hlf-pr4-variant1/chaincode/payment-secure --lang golang --label paymentsecure_1.0
+  ✔ пакет paymentsecure_1.0.tar.gz (2.7M)
+
+━━━━ 3. Package ID ━━━━
+  Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+  ✔ Package ID вычислен: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+
+━━━━ 4. Install на peer0.org1 и peer0.org2 ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+  ➜ уже установлен на peer0.org1 — пропуск
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748, Label: payment_1.0
+Package ID: paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268, Label: paymentvuln_1.0
+Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985, Label: paymentsecure_1.0
+  ✔ peer0.org1: установлен paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+  ➜ уже установлен на peer0.org2 — пропуск
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748, Label: payment_1.0
+Package ID: paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268, Label: paymentvuln_1.0
+Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985, Label: paymentsecure_1.0
+  ✔ peer0.org2: установлен paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+  ➜ определение paymentsecure sequence 1 уже зафиксировано — шаги approve/commit пропущены (идемпотентность)
+
+━━━━ 8. querycommitted — проверка зафиксированного определения ━━━━
+$ peer lifecycle chaincode querycommitted --channelID paymentchannel --name paymentsecure --output json
+{
+	"sequence": 1,
+	"version": "1.0",
+	"endorsement_plugin": "escc",
+	"validation_plugin": "vscc",
+	"validation_parameter": "CiwSDBIKCAISAggAEgIIARoNEgsKB09yZzFNU1AQAxoNEgsKB09yZzJNU1AQAw==",
+	"collections": {
+		"config": [
+			{
+				"Payload": {
+					"StaticCollectionConfig": {
+						"name": "collectionSettlementDetails",
+						"member_orgs_policy": {
+							"Payload": {
+								"SignaturePolicy": {
+									"rule": {
+										"Type": {
+											"NOutOf": {
+												"n": 1,
+												"rules": [
+													{
+														"Type": {
+															"SignedBy": 0
+														}
+													}
+												]
+											}
+										}
+									},
+									"identities": [
+										{
+											"principal": "CgdPcmcxTVNQ"
+										}
+									]
+								}
+							}
+						},
+						"maximum_peer_count": 1,
+						"member_only_read": true,
+						"member_only_write": true,
+						"endorsement_policy": {
+							"Type": {
+								"SignaturePolicy": {
+									"rule": {
+										"Type": {
+											"NOutOf": {
+												"n": 1,
+												"rules": [
+													{
+														"Type": {
+															"SignedBy": 0
+														}
+													}
+												]
+											}
+										}
+									},
+									"identities": [
+										{
+											"principal": "CgdPcmcxTVNQEAM="
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		]
+	},
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ Version: 1.0
+  ✔ Sequence: 1
+  ✔ Approvals: Org1MSP=true, Org2MSP=true
+  Decoded endorsement policy: 2-out-of-2 of [Org1MSP,Org2MSP] role=PEER
+  ✔ Endorsement Policy = AND('Org1MSP.peer','Org2MSP.peer') (2 из 2, роль PEER)
+  ✔ коллекции в определении: collectionSettlementDetails
+
+  ══════ ИТОГ: 10 проверок пройдено, ошибок нет ✔ ══════

@@ -1,0 +1,100 @@
+# command : scripts/lifecycle.sh -n payment -p chaincode/payment-v2 -v 2.0 -s 1 -l payment_2.0  -C bftchannel
+# date    : 2026-10-14 12:26:43 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/bft/39_bft_lifecycle_payment.log
+
+━━━━ Lifecycle: payment v2.0, sequence 1, канал bftchannel ━━━━
+  Endorsement Policy : AND('Org1MSP.peer','Org2MSP.peer')
+
+━━━━ 1. go mod vendor (chaincode/payment-v2) ━━━━
+  ✔ зависимости завендорены (844 файлов .go)
+
+━━━━ 2. Package ━━━━
+$ peer lifecycle chaincode package /home/yeras/hlf-pr4-variant1/build/payment_2.0.tar.gz --path /home/yeras/hlf-pr4-variant1/chaincode/payment-v2 --lang golang --label payment_2.0
+  ✔ пакет payment_2.0.tar.gz (2.7M)
+
+━━━━ 3. Package ID ━━━━
+  Package ID: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+  ✔ Package ID вычислен: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+
+━━━━ 4. Install на peer0.org1 и peer0.org2 ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode install /home/yeras/hlf-pr4-variant1/build/payment_2.0.tar.gz
+2026-10-14 12:27:36.397 +05 0001 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Installed remotely: response:{status:200 payload:"\nLpayment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c\x12\x0bpayment_2.0"}
+2026-10-14 12:27:36.402 +05 0002 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Chaincode code package identifier: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c, Label: payment_2.0
+  ✔ peer0.org1: установлен payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+$ peer lifecycle chaincode install /home/yeras/hlf-pr4-variant1/build/payment_2.0.tar.gz
+2026-10-14 12:28:13.756 +05 0001 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Installed remotely: response:{status:200 payload:"\nLpayment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c\x12\x0bpayment_2.0"}
+2026-10-14 12:28:13.757 +05 0002 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Chaincode code package identifier: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c, Label: payment_2.0
+  ✔ peer0.org2: установлен payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+
+━━━━ 5.1 approveformyorg — Org1MSP ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID bftchannel --name payment --version 2.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --package-id payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+2026-10-14 12:28:15.138 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [ad5652988adb51bbbc8ce63d2e4999eafeafe7225f9897b39bb40bce46af46af] committed with status (VALID) at localhost:7051
+  ✔ Org1MSP утвердила payment v2.0 seq 1
+
+━━━━ 6.1 checkcommitreadiness после approve Org1 ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID bftchannel --name payment --version 2.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": false
+	}
+}
+  Org1MSP: true
+  Org2MSP: false
+
+━━━━ 5.2 approveformyorg — Org2MSP ━━━━
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+$ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID bftchannel --name payment --version 2.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --package-id payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+2026-10-14 12:28:15.964 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [afbfd879f4e11daf43bef63c91fc6075fe853baa5ad7747f68d42058f7371bff] committed with status (VALID) at localhost:9051
+  ✔ Org2MSP утвердила payment v2.0 seq 1
+
+━━━━ 6.2 checkcommitreadiness после approve Org2 ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID bftchannel --name payment --version 2.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  Org1MSP: true
+  Org2MSP: true
+  ✔ обе организации утвердили определение (Org1MSP: true, Org2MSP: true)
+
+━━━━ 7. Commit (endorse обоими peers) ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID bftchannel --name payment --version 2.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --peerAddresses localhost:7051 --tlsRootCertFiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem --peerAddresses localhost:9051 --tlsRootCertFiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+2026-10-14 12:28:17.241 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [97325e84607442262f863a07f061446252fba7c2bd16e77af916886e7da96bd2] committed with status (VALID) at localhost:9051
+2026-10-14 12:28:17.346 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [97325e84607442262f863a07f061446252fba7c2bd16e77af916886e7da96bd2] committed with status (VALID) at localhost:7051
+
+━━━━ 8. querycommitted — проверка зафиксированного определения ━━━━
+$ peer lifecycle chaincode querycommitted --channelID bftchannel --name payment --output json
+{
+	"sequence": 1,
+	"version": "2.0",
+	"endorsement_plugin": "escc",
+	"validation_plugin": "vscc",
+	"validation_parameter": "CiwSDBIKCAISAggAEgIIARoNEgsKB09yZzFNU1AQAxoNEgsKB09yZzJNU1AQAw==",
+	"collections": {},
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ Version: 2.0
+  ✔ Sequence: 1
+  ✔ Approvals: Org1MSP=true, Org2MSP=true
+  Decoded endorsement policy: 2-out-of-2 of [Org1MSP,Org2MSP] role=PEER
+  ✔ Endorsement Policy = AND('Org1MSP.peer','Org2MSP.peer') (2 из 2, роль PEER)
+
+  ══════ ИТОГ: 12 проверок пройдено, ошибок нет ✔ ══════

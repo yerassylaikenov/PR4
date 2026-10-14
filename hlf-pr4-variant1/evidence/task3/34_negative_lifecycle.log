@@ -1,0 +1,45 @@
+# command : ./scripts/34_negative_lifecycle.sh 
+# date    : 2026-10-14 12:00:14 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/34_negative_lifecycle.log
+
+━━━━ Текущее определение и ожидание следующего sequence ━━━━
+  зафиксирован sequence = 1 → следующий допустимый = 2
+
+━━━━ 1. approveformyorg с --sequence 3 (пропуск номера) ━━━━
+$ peer lifecycle chaincode approveformyorg ... --name payment --version 2.0 --sequence 3 --package-id payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c --signature-policy "AND('Org1MSP.peer','Org2MSP.peer')"
+  Error: proposal failed with status: 500 - failed to invoke backing implementation of 'ApproveChaincodeDefinitionForMyOrg': requested sequence 3 is larger than the next available sequence number 2
+  ✔ approve с sequence 3 отклонён: sequence растёт ровно на 1 (ожидается 2)
+
+━━━━ 2. checkcommitreadiness с ДРУГОЙ политикой — OR('Org1MSP.peer','Org2MSP.peer') ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy OR('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": false,
+		"Org2MSP": false
+	}
+}
+  ✔ с политикой OR ни одна организация не утверждала такое определение (Org1MSP: false, Org2MSP: false)
+
+━━━━ 3. checkcommitreadiness БЕЗ --signature-policy (политика по умолчанию — /Channel/Application/Endorsement, MAJORITY) ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name payment --version 2.0 --sequence 2 --output json
+{
+	"approvals": {
+		"Org1MSP": false,
+		"Org2MSP": false
+	}
+}
+  ✔ без явной политики определение другое → approvals false: пропуск флага молча сменил бы модель доверия
+
+━━━━ 4. Контроль: та же команда с исходной AND-политикой ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name payment --version 2.0 --sequence 2 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ с AND-политикой: Org1MSP: true, Org2MSP: true — готово к commit
+
+  ══════ ИТОГ: 4 проверок пройдено, ошибок нет ✔ ══════

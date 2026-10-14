@@ -1,0 +1,127 @@
+# command : ./scripts/12_state.sh 
+# date    : 2026-10-14 11:26:27 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task1/12_state.log
+
+━━━━ ReadPaymentOrder — текущее состояние объектов (World State) ━━━━
+$ peer chaincode query -C paymentchannel -n payment -c {"Args":["ReadPaymentOrder","PO-0001"]}
+  {
+    "docType": "PaymentOrder",
+    "id": "PO-0001",
+    "senderBankMSP": "Org1MSP",
+    "receiverBankMSP": "Org2MSP",
+    "amount": 5000000,
+    "currency": "KZT",
+    "purposeCode": "119",
+    "reference": "Оплата по счёту №42 за услуги",
+    "status": "SETTLED",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "createdAt": "2026-10-14T06:14:31Z",
+    "updatedAt": "2026-10-14T06:14:38Z",
+    "lastTxId": "6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea"
+  }
+  ✔ PO-0001: ожидается SETTLED, фактически SETTLED
+$ peer chaincode query -C paymentchannel -n payment -c {"Args":["ReadPaymentOrder","PO-0002"]}
+  {
+    "docType": "PaymentOrder",
+    "id": "PO-0002",
+    "senderBankMSP": "Org1MSP",
+    "receiverBankMSP": "Org2MSP",
+    "amount": 120000000,
+    "currency": "USD",
+    "purposeCode": "710",
+    "reference": "Импорт оборудования, контракт 2026/17",
+    "status": "CANCELLED",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "createdAt": "2026-10-14T06:14:40Z",
+    "updatedAt": "2026-10-14T06:14:43Z",
+    "lastTxId": "499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba"
+  }
+  ✔ PO-0002: ожидается CANCELLED, фактически CANCELLED
+$ peer chaincode query -C paymentchannel -n payment -c {"Args":["ReadPaymentOrder","PO-0003"]}
+  {
+    "docType": "PaymentOrder",
+    "id": "PO-0003",
+    "senderBankMSP": "Org1MSP",
+    "receiverBankMSP": "Org2MSP",
+    "amount": 75000000,
+    "currency": "KZT",
+    "purposeCode": "342",
+    "reference": "Возврат займа по договору 15-К",
+    "status": "CREATED",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "createdAt": "2026-10-14T06:14:45Z",
+    "updatedAt": "2026-10-14T06:14:45Z",
+    "lastTxId": "43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67"
+  }
+  ✔ PO-0003: ожидается CREATED, фактически CREATED
+$ peer chaincode query -C paymentchannel -n payment -c {"Args":["ReadPaymentOrder","PO-0005"]}
+  {
+    "docType": "PaymentOrder",
+    "id": "PO-0005",
+    "senderBankMSP": "Org1MSP",
+    "receiverBankMSP": "Org2MSP",
+    "amount": 990000,
+    "currency": "EUR",
+    "purposeCode": "119",
+    "reference": "MVCC demo",
+    "status": "CANCELLED",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "createdAt": "2026-10-14T06:14:48Z",
+    "updatedAt": "2026-10-14T06:14:50Z",
+    "lastTxId": "0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3"
+  }
+  ✔ PO-0005: ожидается SUBMITTED|CANCELLED, фактически CANCELLED
+
+━━━━ GetAllPaymentOrders — пагинация (pageSize = 2) ━━━━
+  страница 1: PO-0001=SETTLED, PO-0002=CANCELLED  (fetched=2, bookmark="PO-0003")
+  страница 2: PO-0003=CREATED, PO-0005=CANCELLED  (fetched=2, bookmark="PO.")
+  страница 3:   (fetched=0, bookmark="PO.")
+  ✔ всего объектов PaymentOrder: 4, страниц: 3
+  ✔ pageSize=51 отклоняется (OWASP SC10)
+
+━━━━ GetPaymentOrderHistory(PO-0001) — все версии ключа ━━━━
+  2026-10-14T06:14:38Z  6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea  status=SETTLED
+  2026-10-14T06:14:36Z  bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6  status=ACCEPTED
+  2026-10-14T06:14:33Z  8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681  status=SUBMITTED
+  2026-10-14T06:14:31Z  d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a  status=CREATED
+  ✔ T1 (d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a) присутствует в истории PO-0001
+  ✔ T2 (8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681) присутствует в истории PO-0001
+  ✔ T3 (bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6) присутствует в истории PO-0001
+  ✔ T4 (6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea) присутствует в истории PO-0001
+
+━━━━ CouchDB peer0.org1 (couchdb0:5984) — документ PO-0001 в базе paymentchannel_payment ━━━━
+$ curl -s -u "$COUCH_USER:$COUCH_PASS" http://localhost:5984/_all_dbs
+  ["_replicator","_users","fabric__internal","paymentchannel_","paymentchannel__lifecycle","paymentchannel__lifecycle$$h_implicit_org_$org1$m$s$p","paymentchannel__lifecycle$$h_implicit_org_$org2$m$s$p","paymentchannel__lifecycle$$p_implicit_org_$org1$m$s$p","paymentchannel_lscc","paymentchannel_payment"]
+$ curl -s -u "$COUCH_USER:$COUCH_PASS" http://localhost:5984/paymentchannel_payment/PO-0001
+  {
+    "_id": "PO-0001",
+    "_rev": "4-9223f9100b61ad885c06c74108fde234",
+    "amount": 5000000,
+    "createdAt": "2026-10-14T06:14:31Z",
+    "createdByHash": "c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e",
+    "currency": "KZT",
+    "docType": "PaymentOrder",
+    "id": "PO-0001",
+    "lastTxId": "6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea",
+    "purposeCode": "119",
+    "receiverBankMSP": "Org2MSP",
+    "reference": "Оплата по счёту №42 за услуги",
+    "senderBankMSP": "Org1MSP",
+    "status": "SETTLED",
+    "updatedAt": "2026-10-14T06:14:38Z",
+    "~version": "CgMBCQA="
+  }
+  ✔ поле ~version = CgMBCQA= (версия ключа для MVCC: блок:транзакция в формате Fabric)
+  ✔ CouchDB (World State) хранит PO-0001 со статусом SETTLED
+
+━━━━ Сравнение «ожидаемый / фактический статус» ━━━━
+| Объект | Ожидаемый статус | Фактический статус | Сумма | lastTxId | Совпадение |
+|---|---|---|---|---|---|
+| PO-0001 | SETTLED | SETTLED | 5000000 KZT | `6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea` | ✅ |
+| PO-0002 | CANCELLED | CANCELLED | 120000000 USD | `499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba` | ✅ |
+| PO-0003 | CREATED | CREATED | 75000000 KZT | `43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67` | ✅ |
+| PO-0005 | SUBMITTED|CANCELLED | CANCELLED | 990000 EUR | `0fadf26417fdb06941482a121da4b3e6a5b29123a2fb1a9e55ba77cb6f3026b3` | ✅ |
+
+  ══════ ИТОГ: 12 проверок пройдено, ошибок нет ✔ ══════

@@ -1,0 +1,49 @@
+# command : ./scripts/35_commit_v2.sh 
+# date    : 2026-10-14 12:00:15 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/35_commit.log
+
+━━━━ docker ps (контейнеры chaincode) ДО commit ━━━━
+NAMES                                                                                                           STATUS
+dev-peer0.org1.example.com-payment_1.0-41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748         Up 45 minutes
+dev-peer0.org2.example.com-payment_1.0-41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748         Up 45 minutes
+  ➜ режим --commit-only: пакет уже установлен и утверждён, Package ID payment_2.0:14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c
+  ✔ обе организации утвердили определение (Org1MSP: true, Org2MSP: true)
+	"sequence": 2,
+	"version": "2.0",
+  ✔ Version: 2.0
+  ✔ Sequence: 2
+  ✔ Approvals: Org1MSP=true, Org2MSP=true
+  Decoded endorsement policy: 2-out-of-2 of [Org1MSP,Org2MSP] role=PEER
+  ✔ Endorsement Policy = AND('Org1MSP.peer','Org2MSP.peer') (2 из 2, роль PEER)
+  ══════ ИТОГ: 5 проверок пройдено, ошибок нет ✔ ══════
+
+━━━━ querycommitted после commit ━━━━
+$ peer lifecycle chaincode querycommitted --channelID paymentchannel --name payment --output json
+{
+	"sequence": 2,
+	"version": "2.0",
+	"endorsement_plugin": "escc",
+	"validation_plugin": "vscc",
+	"validation_parameter": "CiwSDBIKCAISAggAEgIIARoNEgsKB09yZzFNU1AQAxoNEgsKB09yZzJNU1AQAw==",
+	"collections": {},
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ Version: 2.0
+  ✔ Sequence: 2
+  ✔ Endorsement Policy без изменений: тот же validation_parameter, что у 1.0 (AND)
+  ✔ approvals обеих организаций
+
+━━━━ Первый invoke через v2.0 (evaluate не запускает commit) — запуск контейнеров 2.0 ━━━━
+
+━━━━ docker ps ПОСЛЕ первого обращения ━━━━
+NAMES                                                                                                           STATUS
+dev-peer0.org2.example.com-payment_2.0-14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c         Up 3 seconds
+dev-peer0.org1.example.com-payment_2.0-14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c         Up 3 seconds
+  ✔ запущены dev-peer0.org1/org2-payment_2.0-* (2 контейнера)
+
+  ══════ ИТОГ: 5 проверок пройдено, ошибок нет ✔ ══════

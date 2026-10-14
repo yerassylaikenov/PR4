@@ -1,0 +1,84 @@
+# command : ./scripts/10_transactions.sh 
+# date    : 2026-10-14 11:14:30 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task1/10_transactions.log
+
+━━━━ Задание 1.5 — транзакции chaincode payment v1.0 (канал paymentchannel) ━━━━
+
+[T1] Create PO-0001 (5 000 000 тиын, KZT, КНП 119) — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0001","Org2MSP","5000000","KZT","119","Оплата по счёту №42 за услуги"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:33.525 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:33.536 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:33.537 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0001\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":5000000,\"currency\":\"KZT\",\"purposeCode\":\"119\",\"reference\":\"Оплата по счёту №42 за услуги\",\"status\":\"CREATED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:31Z\",\"updatedAt\":\"2026-10-14T06:14:31Z\",\"lastTxId\":\"d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a\"}"
+  ✔ T1 Create PO-0001 (block 6) → committed with status (VALID)  TxID=d0f75e8f6802ce2586074840bc9edf3d0a1d2189e90dcab9818c0ba3cf7ea78a
+
+[T2] Submit PO-0001 (авторизация списания) — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"SubmitPaymentOrder","Args":["PO-0001"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:35.949 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:35.955 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:35.955 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0001\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":5000000,\"currency\":\"KZT\",\"purposeCode\":\"119\",\"reference\":\"Оплата по счёту №42 за услуги\",\"status\":\"SUBMITTED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:31Z\",\"updatedAt\":\"2026-10-14T06:14:33Z\",\"lastTxId\":\"8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681\"}"
+  ✔ T2 Submit PO-0001 (block 7) → committed with status (VALID)  TxID=8c9b636187e5b29c4788548ee13c1eb0bd39b941218fb26f652d3a9bf062c681
+
+[T3] Accept PO-0001 (банк-получатель) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"AcceptPaymentOrder","Args":["PO-0001"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:38.299 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:38.302 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:38.302 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0001\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":5000000,\"currency\":\"KZT\",\"purposeCode\":\"119\",\"reference\":\"Оплата по счёту №42 за услуги\",\"status\":\"ACCEPTED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:31Z\",\"updatedAt\":\"2026-10-14T06:14:36Z\",\"lastTxId\":\"bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6\"}"
+  ✔ T3 Accept PO-0001 (block 8) → committed with status (VALID)  TxID=bad5e7d6484c37429c8b0ff1368739a07300724fee5e3dea7843c0675c217ce6
+
+[T4] Settle PO-0001 — ОСНОВНАЯ БИЗНЕС-ОПЕРАЦИЯ (исполнение платежа) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"SettlePaymentOrder","Args":["PO-0001"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:40.631 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:40.633 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:40.633 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0001\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":5000000,\"currency\":\"KZT\",\"purposeCode\":\"119\",\"reference\":\"Оплата по счёту №42 за услуги\",\"status\":\"SETTLED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:31Z\",\"updatedAt\":\"2026-10-14T06:14:38Z\",\"lastTxId\":\"6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea\"}"
+  ✔ T4 Settle PO-0001 (block 9) → committed with status (VALID)  TxID=6d535b17ed87353864ed5766a39ab25b8937223d857c2c80b5b81b7ba4e489ea
+
+━━━━ T5 через Fabric Gateway (Go, fabric-gateway SDK) — компонент Gateway на схеме реален ━━━━
+$ client/payment-client -org 1 -user Admin submit payment CreatePaymentOrder PO-0002 Org2MSP 120000000 USD 710 "..."
+  Gateway   : peer0.org1.example.com (gRPC+TLS, localhost:7051)
+  Identity  : Org1MSP / Admin
+  Call      : submit payment.CreatePaymentOrder(PO-0002, Org2MSP, 120000000, USD, 710, Импорт оборудования, контракт 2026/17)
+  TxID      : 69f6d6bd56354453d50261bf486f6fe82ecadedd6df9b923842269d8b2e501ce
+  Status    : VALID (code 0)
+  Block     : 10
+  Result    : {"docType":"PaymentOrder","id":"PO-0002","senderBankMSP":"Org1MSP","receiverBankMSP":"Org2MSP","amount":120000000,"currency":"USD","purposeCode":"710","reference":"Импорт оборудования, контракт 2026/17","status":"CREATED","createdByHash":"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e","createdAt":"2026-10-14T06:14:40Z","updatedAt":"2026-10-14T06:14:40Z","lastTxId":"69f6d6bd56354453d50261bf486f6fe82ecadedd6df9b923842269d8b2e501ce"}
+  ✔ Gateway: блок 10 совпадает с qscc GetBlockByTxID
+  ✔ T5 Create PO-0002 via Gateway (block 10) → committed with status (VALID)  TxID=69f6d6bd56354453d50261bf486f6fe82ecadedd6df9b923842269d8b2e501ce
+
+[T6] Cancel PO-0002 — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CancelPaymentOrder","Args":["PO-0002"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:45.522 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:45.525 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:45.525 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0002\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":120000000,\"currency\":\"USD\",\"purposeCode\":\"710\",\"reference\":\"Импорт оборудования, контракт 2026/17\",\"status\":\"CANCELLED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:40Z\",\"updatedAt\":\"2026-10-14T06:14:43Z\",\"lastTxId\":\"499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba\"}"
+  ✔ T6 Cancel PO-0002 (block 11) → committed with status (VALID)  TxID=499123ba236b5ac0e2f552f3b74a0a919fd259edff225698f0406ac8054f36ba
+
+[T7] Create PO-0003 (остаётся в CREATED для Задания 3) — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0003","Org2MSP","75000000","KZT","342","Возврат займа по договору 15-К"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:47.858 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:47.858 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:47.859 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0003\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":75000000,\"currency\":\"KZT\",\"purposeCode\":\"342\",\"reference\":\"Возврат займа по договору 15-К\",\"status\":\"CREATED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:45Z\",\"updatedAt\":\"2026-10-14T06:14:45Z\",\"lastTxId\":\"43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67\"}"
+  ✔ T7 Create PO-0003 (block 12) → committed with status (VALID)  TxID=43dd8a91382e11845a39f520b66714bbbcccedccc91cec4eabbf278e801bec67
+
+━━━━ Негативные сценарии — отказ на этапе endorsement (в ledger не попадают) ━━━━
+
+[N1] Settle PO-0003 из CREATED (недопустимый переход) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"SettlePaymentOrder","Args":["PO-0003"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_INVALID_TRANSITION: transition CREATED -> SETTLED is not allowed"
+  ✔ N1 Settle PO-0003 → отклонено, как и ожидалось: ERR_INVALID_TRANSITION: transition CREATED -> SETTLED is not allowed
+
+[N2] Create PO-0004 от Org2 (банк-получатель не создаёт поручения) — Org2MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0004","Org1MSP","100","KZT","119","Попытка от Org2"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  Error: endorsement failure during invoke. response: status:500 message:"ERR_UNAUTHORIZED: caller organisation may not create payment orders"
+  ✔ N2 Create PO-0004 by Org2 → отклонено, как и ожидалось: ERR_UNAUTHORIZED: caller organisation may not create payment orders
+  ✔ PO-0004 отсутствует в World State
+  ✔ N1/N2: блок не создан (TxID не попал в ledger)
+
+━━━━ Демонстрация MVCC: Submit и Cancel одного ключа PO-0005 параллельно ━━━━
+
+[T8] Create PO-0005 — Org1MSP/Admin
+$ peer chaincode invoke -C paymentchannel -n payment -c {"function":"CreatePaymentOrder","Args":["PO-0005","Org2MSP","990000","EUR","119","MVCC demo"]} --peerAddresses peer0.org1 --peerAddresses peer0.org2 --waitForEvent
+  2026-10-14 11:14:50.591 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [d949c0a625223cd7a90bedd4e0fb11c3bf8c90822cd14ba55e4074284a4250d0] committed with status (VALID) at localhost:9051
+  2026-10-14 11:14:50.594 +05 0003 INFO [chaincodeCmd] ClientWait -> txid [d949c0a625223cd7a90bedd4e0fb11c3bf8c90822cd14ba55e4074284a4250d0] committed with status (VALID) at localhost:7051
+  2026-10-14 11:14:50.594 +05 0004 INFO [chaincodeCmd] chaincodeInvokeOrQuery -> Chaincode invoke successful. result: status:200 payload:"{\"docType\":\"PaymentOrder\",\"id\":\"PO-0005\",\"senderBankMSP\":\"Org1MSP\",\"receiverBankMSP\":\"Org2MSP\",\"amount\":990000,\"currency\":\"EUR\",\"purposeCode\":\"119\",\"reference\":\"MVCC demo\",\"status\":\"CREATED\",\"createdByHash\":\"c3ed976c35ddb81f1b3e9fb3eb420d48f321f822d8b7aabf356df9d2b7b21e2e\",\"createdAt\":\"2026-10-14T06:14:48Z\",\"updatedAt\":\"2026-10-14T06:14:48Z\",\"lastTxId\":\"d949c0a625223cd7a90bedd4e0fb11c3bf8c90822cd14ba55e4074284a4250d0\"}"
+  ✔ T8 Create PO-0005 (block 13) → committed with status (VALID)  TxID=d949c0a625223cd7a90bedd4e0fb11c3bf8c90822cd14ba55e4074284a4250d0

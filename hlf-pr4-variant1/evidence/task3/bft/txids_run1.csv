@@ -1,0 +1,7 @@
+n,function,args,invoker,txid,block,validation_code
+E1,CreatePaymentOrder via orderer,PO-BFT-E1-122924,Org1MSP/Admin,12a21f5a863fe7547877fecb103aefbd598da7f33f9a277e0ed3b9dfa33fff36,6,VALID
+E3,CreatePaymentOrder via orderer,PO-BFT-E3-122928,Org1MSP/Admin,03434274bea22f8bf232f8a09afd2a470f499772db3754c0060c0f0004ed59db,7,VALID
+E4,CreatePaymentOrder via orderer,PO-BFT-E4-123109,Org1MSP/Admin,5a8c790d855cc1f47f63bc734f5d2d7e2d6ae2957f5bb71bce477471b64fa34a,8,VALID
+E5,CreatePaymentOrder via orderer2,PO-BFT-E5-123128,Org1MSP/Admin,6f43e299fddec654bdc66c594b8ce120abfe4f8051e6d3ea8ba61e5dbfe881c2,9,VALID
+E7,CreatePaymentOrder via orderer2,PO-BFT-E7-123244,Org1MSP/Admin,-,-,REJECTED_AT_ENDORSEMENT
+E8,CreatePaymentOrder via orderer2,PO-BFT-E8-123341,Org1MSP/Admin,ccfd928505c6e82a530c2eb67b37affa23f23119644ec428fb5645ddb0f822fa,10,VALID

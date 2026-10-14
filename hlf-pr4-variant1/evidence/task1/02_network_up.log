@@ -1,0 +1,508 @@
+# command : ./scripts/02_network_up.sh 
+# date    : 2026-10-14 11:11:42 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task1/02_network_up.log
+
+━━━━ Задание 1.1 — корпоративная сеть Hyperledger Fabric ━━━━
+$ ./network.sh up createChannel -c paymentchannel -ca -s couchdb
+Using docker and docker-compose
+Creating channel 'paymentchannel'.
+If network is not up, starting nodes with CLI timeout of '5' tries and CLI delay of '3' seconds and using database 'couchdb with crypto from 'Certificate Authorities'
+Bringing up network
+LOCAL_VERSION=v3.1.5
+DOCKER_IMAGE_VERSION=v3.1.5
+CA_LOCAL_VERSION=v1.5.22
+CA_DOCKER_IMAGE_VERSION=v1.5.22
+Generating certificates using Fabric CA
+ Network fabric_test Creating 
+ Network fabric_test Creating 
+ Network fabric_test Created 
+ Network fabric_test Created 
+ Container ca_org2 Creating 
+ Container ca_org1 Creating 
+ Container ca_orderer Creating 
+ Container ca_orderer Created 
+ Container ca_org1 Created 
+ Container ca_org2 Created 
+ Container ca_org1 Starting 
+ Container ca_org2 Starting 
+ Container ca_orderer Starting 
+ Container ca_org1 Started 
+ Container ca_org2 Started 
+ Container ca_orderer Started 
++ fabric-ca-client getcainfo -u https://[REDACTED]@localhost:7054 --caname ca-org1 --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:53 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:53 [INFO] TLS Enabled
+2026/10/14 11:11:53 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/cacerts/localhost-7054-ca-org1.pem
+2026/10/14 11:11:53 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:53 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/IssuerRevocationPublicKey
++ res=0
+Creating Org1 Identities
+Enrolling the CA admin
++ fabric-ca-client enroll -u https://[REDACTED]@localhost:7054 --caname ca-org1 --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:53 [INFO] Created a default configuration file at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:53 [INFO] TLS Enabled
+2026/10/14 11:11:53 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:53 [INFO] encoded CSR
+2026/10/14 11:11:53 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:53 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/cacerts/localhost-7054-ca-org1.pem
+2026/10/14 11:11:53 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:53 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/msp/IssuerRevocationPublicKey
+Registering peer0
++ fabric-ca-client register --caname ca-org1 --id.name peer0 --id.secret [REDACTED] --id.type peer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:53 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:53 [INFO] TLS Enabled
+2026/10/14 11:11:53 [INFO] TLS Enabled
+Password: [REDACTED]
+Registering user
++ fabric-ca-client register --caname ca-org1 --id.name user1 --id.secret [REDACTED] --id.type client --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:54 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:54 [INFO] TLS Enabled
+2026/10/14 11:11:54 [INFO] TLS Enabled
+Password: [REDACTED]
+Registering the org admin
++ fabric-ca-client register --caname ca-org1 --id.name org1admin --id.secret [REDACTED] --id.type admin --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:54 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:54 [INFO] TLS Enabled
+2026/10/14 11:11:54 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the peer0 msp
++ fabric-ca-client enroll -u https://peer0:[REDACTED]@localhost:7054 --caname ca-org1 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:54 [INFO] TLS Enabled
+2026/10/14 11:11:54 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:54 [INFO] encoded CSR
+2026/10/14 11:11:54 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:54 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/cacerts/localhost-7054-ca-org1.pem
+2026/10/14 11:11:54 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:54 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/IssuerRevocationPublicKey
+Generating the peer0-tls certificates, use --csr.hosts to specify Subject Alternative Names
++ fabric-ca-client enroll -u https://peer0:[REDACTED]@localhost:7054 --caname ca-org1 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls --enrollment.profile tls --csr.hosts peer0.org1.example.com --csr.hosts localhost --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:54 [INFO] TLS Enabled
+2026/10/14 11:11:54 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:54 [INFO] encoded CSR
+2026/10/14 11:11:54 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/signcerts/cert.pem
+2026/10/14 11:11:54 [INFO] Stored TLS root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/tlscacerts/tls-localhost-7054-ca-org1.pem
+2026/10/14 11:11:54 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/IssuerPublicKey
+2026/10/14 11:11:54 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/IssuerRevocationPublicKey
+Generating the user msp
++ fabric-ca-client enroll -u https://user1:[REDACTED]@localhost:7054 --caname ca-org1 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:54 [INFO] TLS Enabled
+2026/10/14 11:11:54 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:54 [INFO] encoded CSR
+2026/10/14 11:11:54 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:54 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/cacerts/localhost-7054-ca-org1.pem
+2026/10/14 11:11:54 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:54 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/IssuerRevocationPublicKey
+Generating the org admin msp
++ fabric-ca-client enroll -u https://org1admin:[REDACTED]@localhost:7054 --caname ca-org1 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org1/ca-cert.pem
+2026/10/14 11:11:54 [INFO] TLS Enabled
+2026/10/14 11:11:54 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:54 [INFO] encoded CSR
+2026/10/14 11:11:54 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:54 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/cacerts/localhost-7054-ca-org1.pem
+2026/10/14 11:11:54 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:54 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/IssuerRevocationPublicKey
+Creating Org2 Identities
+Enrolling the CA admin
++ fabric-ca-client enroll -u https://[REDACTED]@localhost:8054 --caname ca-org2 --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] Created a default configuration file at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:55 [INFO] encoded CSR
+2026/10/14 11:11:55 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:55 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/msp/cacerts/localhost-8054-ca-org2.pem
+2026/10/14 11:11:55 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:55 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/msp/IssuerRevocationPublicKey
+Registering peer0
++ fabric-ca-client register --caname ca-org2 --id.name peer0 --id.secret [REDACTED] --id.type peer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] TLS Enabled
+Password: [REDACTED]
+Registering user
++ fabric-ca-client register --caname ca-org2 --id.name user1 --id.secret [REDACTED] --id.type client --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] TLS Enabled
+Password: [REDACTED]
+Registering the org admin
++ fabric-ca-client register --caname ca-org2 --id.name org2admin --id.secret [REDACTED] --id.type admin --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the peer0 msp
++ fabric-ca-client enroll -u https://peer0:[REDACTED]@localhost:8054 --caname ca-org2 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:55 [INFO] encoded CSR
+2026/10/14 11:11:55 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:55 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/cacerts/localhost-8054-ca-org2.pem
+2026/10/14 11:11:55 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:55 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/IssuerRevocationPublicKey
+Generating the peer0-tls certificates, use --csr.hosts to specify Subject Alternative Names
++ fabric-ca-client enroll -u https://peer0:[REDACTED]@localhost:8054 --caname ca-org2 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls --enrollment.profile tls --csr.hosts peer0.org2.example.com --csr.hosts localhost --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:55 [INFO] encoded CSR
+2026/10/14 11:11:55 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/signcerts/cert.pem
+2026/10/14 11:11:55 [INFO] Stored TLS root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/tlscacerts/tls-localhost-8054-ca-org2.pem
+2026/10/14 11:11:55 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/IssuerPublicKey
+2026/10/14 11:11:55 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/IssuerRevocationPublicKey
+Generating the user msp
++ fabric-ca-client enroll -u https://user1:[REDACTED]@localhost:8054 --caname ca-org2 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:55 [INFO] TLS Enabled
+2026/10/14 11:11:55 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:55 [INFO] encoded CSR
+2026/10/14 11:11:56 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:56 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/cacerts/localhost-8054-ca-org2.pem
+2026/10/14 11:11:56 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:56 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/IssuerRevocationPublicKey
+Generating the org admin msp
++ fabric-ca-client enroll -u https://org2admin:[REDACTED]@localhost:8054 --caname ca-org2 -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/org2/ca-cert.pem
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:56 [INFO] encoded CSR
+2026/10/14 11:11:56 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:56 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/cacerts/localhost-8054-ca-org2.pem
+2026/10/14 11:11:56 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:56 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/IssuerRevocationPublicKey
+Creating Orderer Org Identities
+Enrolling the CA admin
++ fabric-ca-client enroll -u https://[REDACTED]@localhost:9054 --caname ca-orderer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:56 [INFO] Created a default configuration file at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:56 [INFO] encoded CSR
+2026/10/14 11:11:56 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:56 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/msp/cacerts/localhost-9054-ca-orderer.pem
+2026/10/14 11:11:56 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/msp/IssuerPublicKey
+2026/10/14 11:11:56 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/msp/IssuerRevocationPublicKey
+Registering orderer
++ fabric-ca-client register --caname ca-orderer --id.name orderer --id.secret [REDACTED] --id.type orderer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:56 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the orderer MSP
++ fabric-ca-client enroll -u https://orderer:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:56 [INFO] encoded CSR
+2026/10/14 11:11:56 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:56 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/localhost-9054-ca-orderer.pem
+2026/10/14 11:11:56 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:56 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/IssuerRevocationPublicKey
+Generating the orderer TLS certificates, use --csr.hosts to specify Subject Alternative Names
++ fabric-ca-client enroll -u https://orderer:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls --enrollment.profile tls --csr.hosts orderer.example.com --csr.hosts localhost --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:56 [INFO] encoded CSR
+2026/10/14 11:11:56 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/signcerts/cert.pem
+2026/10/14 11:11:56 [INFO] Stored TLS root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/tlscacerts/tls-localhost-9054-ca-orderer.pem
+2026/10/14 11:11:56 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/IssuerPublicKey
+2026/10/14 11:11:56 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/IssuerRevocationPublicKey
+Registering orderer2
++ fabric-ca-client register --caname ca-orderer --id.name orderer2 --id.secret [REDACTED] --id.type orderer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:56 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the orderer2 MSP
++ fabric-ca-client enroll -u https://orderer2:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:56 [INFO] TLS Enabled
+2026/10/14 11:11:56 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:56 [INFO] encoded CSR
+2026/10/14 11:11:57 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:57 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/cacerts/localhost-9054-ca-orderer.pem
+2026/10/14 11:11:57 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:57 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/IssuerRevocationPublicKey
+Generating the orderer2 TLS certificates, use --csr.hosts to specify Subject Alternative Names
++ fabric-ca-client enroll -u https://orderer2:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls --enrollment.profile tls --csr.hosts orderer2.example.com --csr.hosts localhost --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:57 [INFO] encoded CSR
+2026/10/14 11:11:57 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/signcerts/cert.pem
+2026/10/14 11:11:57 [INFO] Stored TLS root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/tlscacerts/tls-localhost-9054-ca-orderer.pem
+2026/10/14 11:11:57 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/IssuerPublicKey
+2026/10/14 11:11:57 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/IssuerRevocationPublicKey
+Registering orderer3
++ fabric-ca-client register --caname ca-orderer --id.name orderer3 --id.secret [REDACTED] --id.type orderer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the orderer3 MSP
++ fabric-ca-client enroll -u https://orderer3:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:57 [INFO] encoded CSR
+2026/10/14 11:11:57 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:57 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/cacerts/localhost-9054-ca-orderer.pem
+2026/10/14 11:11:57 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:57 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/IssuerRevocationPublicKey
+Generating the orderer3 TLS certificates, use --csr.hosts to specify Subject Alternative Names
++ fabric-ca-client enroll -u https://orderer3:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls --enrollment.profile tls --csr.hosts orderer3.example.com --csr.hosts localhost --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:57 [INFO] encoded CSR
+2026/10/14 11:11:57 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/signcerts/cert.pem
+2026/10/14 11:11:57 [INFO] Stored TLS root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/tlscacerts/tls-localhost-9054-ca-orderer.pem
+2026/10/14 11:11:57 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/IssuerPublicKey
+2026/10/14 11:11:57 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/IssuerRevocationPublicKey
+Registering orderer4
++ fabric-ca-client register --caname ca-orderer --id.name orderer4 --id.secret [REDACTED] --id.type orderer --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the orderer4 MSP
++ fabric-ca-client enroll -u https://orderer4:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:57 [INFO] encoded CSR
+2026/10/14 11:11:57 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:57 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/msp/cacerts/localhost-9054-ca-orderer.pem
+2026/10/14 11:11:57 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/msp/IssuerPublicKey
+2026/10/14 11:11:57 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/msp/IssuerRevocationPublicKey
+Generating the orderer4 TLS certificates, use --csr.hosts to specify Subject Alternative Names
++ fabric-ca-client enroll -u https://orderer4:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/tls --enrollment.profile tls --csr.hosts orderer4.example.com --csr.hosts localhost --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:57 [INFO] TLS Enabled
+2026/10/14 11:11:57 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:57 [INFO] encoded CSR
+2026/10/14 11:11:58 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/tls/signcerts/cert.pem
+2026/10/14 11:11:58 [INFO] Stored TLS root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/tls/tlscacerts/tls-localhost-9054-ca-orderer.pem
+2026/10/14 11:11:58 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/tls/IssuerPublicKey
+2026/10/14 11:11:58 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer4.example.com/tls/IssuerRevocationPublicKey
+Registering the orderer admin
++ fabric-ca-client register --caname ca-orderer --id.name ordererAdmin --id.secret [REDACTED] --id.type admin --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:58 [INFO] Configuration file location: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/fabric-ca-client-config.yaml
+2026/10/14 11:11:58 [INFO] TLS Enabled
+2026/10/14 11:11:58 [INFO] TLS Enabled
+Password: [REDACTED]
+Generating the admin msp
++ fabric-ca-client enroll -u https://ordererAdmin:[REDACTED]@localhost:9054 --caname ca-orderer -M /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/users/Admin@example.com/msp --tls.certfiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/fabric-ca/ordererOrg/ca-cert.pem
+2026/10/14 11:11:58 [INFO] TLS Enabled
+2026/10/14 11:11:58 [INFO] generating key: &{A:ecdsa S:256}
+2026/10/14 11:11:58 [INFO] encoded CSR
+2026/10/14 11:11:58 [INFO] Stored client certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/cert.pem
+2026/10/14 11:11:58 [INFO] Stored root CA certificate at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/users/Admin@example.com/msp/cacerts/localhost-9054-ca-orderer.pem
+2026/10/14 11:11:58 [INFO] Stored Issuer public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/users/Admin@example.com/msp/IssuerPublicKey
+2026/10/14 11:11:58 [INFO] Stored Issuer revocation public key at /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/users/Admin@example.com/msp/IssuerRevocationPublicKey
+Generating CCP files for Org1 and Org2
+time="2026-10-14T11:11:58+05:00" level=warning msg="Found orphan containers (ca_org1, ca_org2, ca_orderer) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Volume compose_orderer.example.com Creating 
+ Container couchdb0 Creating 
+ Volume compose_peer0.org1.example.com Creating 
+ Volume compose_peer0.org2.example.com Creating 
+ Volume compose_peer0.org1.example.com Creating 
+ Volume compose_peer0.org2.example.com Creating 
+ Container couchdb1 Creating 
+ Volume compose_orderer.example.com Creating 
+ Volume compose_peer0.org1.example.com Created 
+ Volume compose_peer0.org1.example.com Created 
+ Volume compose_orderer.example.com Created 
+ Volume compose_orderer.example.com Created 
+ Container orderer.example.com Creating 
+ Volume compose_peer0.org2.example.com Created 
+ Volume compose_peer0.org2.example.com Created 
+ Container couchdb1 Created 
+ Container peer0.org2.example.com Creating 
+ Container couchdb0 Created 
+ Container peer0.org1.example.com Creating 
+ Container orderer.example.com Created 
+ Container peer0.org2.example.com Created 
+ Container peer0.org1.example.com Created 
+ Container couchdb1 Starting 
+ Container couchdb0 Starting 
+ Container orderer.example.com Starting 
+ Container couchdb1 Started 
+ Container peer0.org2.example.com Starting 
+ Container couchdb0 Started 
+ Container peer0.org1.example.com Starting 
+ Container orderer.example.com Started 
+ Container peer0.org2.example.com Started 
+ Container peer0.org1.example.com Started 
+CONTAINER ID   IMAGE                               COMMAND                  CREATED          STATUS                      PORTS                                                                                                                                   NAMES
+a3389b64fb79   hyperledger/fabric-peer:latest      "peer node start"        4 seconds ago    Up Less than a second       0.0.0.0:7051->7051/tcp, [::]:7051->7051/tcp, 0.0.0.0:9444->9444/tcp, [::]:9444->9444/tcp                                                peer0.org1.example.com
+4e40874e1120   hyperledger/fabric-peer:latest      "peer node start"        4 seconds ago    Up 1 second                 0.0.0.0:9051->9051/tcp, [::]:9051->9051/tcp, 0.0.0.0:9445->9445/tcp, [::]:9445->9445/tcp                                                peer0.org2.example.com
+16d9b633fa71   hyperledger/fabric-orderer:latest   "orderer"                5 seconds ago    Up 2 seconds                0.0.0.0:7050->7050/tcp, [::]:7050->7050/tcp, 0.0.0.0:7053->7053/tcp, [::]:7053->7053/tcp, 0.0.0.0:9443->9443/tcp, [::]:9443->9443/tcp   orderer.example.com
+ede835bf50ac   couchdb:3.4.2                       "tini -- /docker-ent…"   5 seconds ago    Up 3 seconds                0.0.0.0:5984->5984/tcp, [::]:5984->5984/tcp                                                                                             couchdb0
+1d548021c7cf   couchdb:3.4.2                       "tini -- /docker-ent…"   5 seconds ago    Up 3 seconds                0.0.0.0:7984->5984/tcp, [::]:7984->5984/tcp                                                                                             couchdb1
+aa73a3013fca   hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   13 seconds ago   Up 11 seconds               0.0.0.0:7054->7054/tcp, [::]:7054->7054/tcp, 0.0.0.0:17054->17054/tcp, [::]:17054->17054/tcp                                            ca_org1
+c95aad7310e1   hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   13 seconds ago   Up 11 seconds               0.0.0.0:8054->8054/tcp, [::]:8054->8054/tcp, 0.0.0.0:18054->18054/tcp, [::]:18054->18054/tcp                                            ca_org2
+ae82ecec418f   hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   13 seconds ago   Up 10 seconds               0.0.0.0:9054->9054/tcp, [::]:9054->9054/tcp, 0.0.0.0:19054->19054/tcp, [::]:19054->19054/tcp                                            ca_orderer
+34812670815d   f9db6a7fae43                        "/bin/sh -c '#(nop) …"   17 minutes ago   Created                                                                                                                                                             hopeful_mccarthy
+0b1543f2e443   a511f1117265                        "/bin/sh -c '#(nop) …"   17 minutes ago   Created                                                                                                                                                             crazy_elbakyan
+a4d54261ce96   8f4861cb6b9a                        "/bin/sh -c '#(nop) …"   17 minutes ago   Created                                                                                                                                                             hungry_jepsen
+372ef1f360f2   389a77f94575                        "/bin/sh -c '#(nop) …"   17 minutes ago   Created                                                                                                                                                             flamboyant_kilby
+cb8332ee1f81   3b9af280c24c                        "/docker-entrypoint.…"   2 weeks ago      Exited (0) 17 hours ago                                                                                                                                             orbitduo-frontend-1
+99a5f4170659   d316f56fe32c                        "python -m uvicorn b…"   2 weeks ago      Exited (143) 17 hours ago                                                                                                                                           orbitduo-backend-1
+Using docker and docker-compose
+Generating channel genesis block 'paymentchannel.block'
+Using organization 1
+/home/yeras/hlf-pr4-variant1/fabric-samples/test-network/../bin/configtxgen
++ '[' 0 -eq 1 ']'
++ configtxgen -profile ChannelUsingRaft -outputBlock ./channel-artifacts/paymentchannel.block -channelID paymentchannel
+2026-10-14 11:12:03.495 +05 0001 INFO [common.tools.configtxgen] main -> Loading configuration
+2026-10-14 11:12:03.501 +05 0002 INFO [common.tools.configtxgen.localconfig] completeInitialization -> orderer type: etcdraft
+2026-10-14 11:12:03.502 +05 0003 INFO [common.tools.configtxgen.localconfig] completeInitialization -> Orderer.EtcdRaft.Options unset, setting to tick_interval:"500ms" election_tick:10 heartbeat_tick:1 max_inflight_blocks:5 snapshot_interval_size:16777216
+2026-10-14 11:12:03.502 +05 0004 INFO [common.tools.configtxgen.localconfig] Load -> Loaded configuration: /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/configtx/configtx.yaml
+2026-10-14 11:12:03.508 +05 0005 INFO [common.tools.configtxgen] doOutputBlock -> Generating genesis block
+2026-10-14 11:12:03.508 +05 0006 INFO [common.tools.configtxgen] doOutputBlock -> Creating application channel genesis block
+2026-10-14 11:12:03.509 +05 0007 INFO [common.tools.configtxgen] doOutputBlock -> Writing genesis block
++ res=0
+Creating channel paymentchannel
+Adding orderers
++ . scripts/orderer.sh paymentchannel
++ '[' 0 -eq 1 ']'
++ res=0
+Status: 201
+{
+	"name": "paymentchannel",
+	"url": "/participation/v1/channels/paymentchannel",
+	"consensusRelation": "consenter",
+	"status": "active",
+	"height": 1
+}
+
+Channel 'paymentchannel' created
+Joining org1 peer to the channel...
+Using organization 1
++ peer channel join -b ./channel-artifacts/paymentchannel.block
++ res=0
+2026-10-14 11:12:09.953 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:12:10.259 +05 0002 INFO [channelCmd] executeJoin -> Successfully submitted proposal to join channel
+Joining org2 peer to the channel...
+Using organization 2
++ peer channel join -b ./channel-artifacts/paymentchannel.block
++ res=0
+2026-10-14 11:12:13.312 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:12:13.584 +05 0002 INFO [channelCmd] executeJoin -> Successfully submitted proposal to join channel
+Setting anchor peer for org1...
+Using organization 1
+Fetching channel config for channel paymentchannel
+Using organization 1
+Fetching the most recent configuration block for the channel
+++ peer channel fetch config /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c paymentchannel --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 11:12:13.667 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:12:13.672 +05 0002 INFO [cli.common] readBlock -> Received block: 0
+2026-10-14 11:12:13.672 +05 0003 INFO [channelCmd] fetch -> Retrieving last config block: 0
+2026-10-14 11:12:13.674 +05 0004 INFO [cli.common] readBlock -> Received block: 0
+Decoding config block to JSON and isolating config to /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org1MSPconfig.json
+++ configtxlator proto_decode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.pb --type common.Block --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.json
+++ jq '.data.data[0].payload.data.config' /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.json
+++ res=0
+Generating anchor peer update transaction for Org1 on channel paymentchannel
+++ jq '.channel_group.groups.Application.groups.Org1MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.example.com","port": 7051}]},"version": "0"}}' /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org1MSPconfig.json
+++ res=0
+++ configtxlator proto_encode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org1MSPconfig.json --type common.Config --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/original_config.pb
+++ configtxlator proto_encode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org1MSPmodified_config.json --type common.Config --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/modified_config.pb
+++ configtxlator compute_update --channel_id paymentchannel --original /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/original_config.pb --updated /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/modified_config.pb --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.pb
+++ configtxlator proto_decode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.pb --type common.ConfigUpdate --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.json
++++ cat /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.json
+++ jq .
+++ echo '{"payload":{"header":{"channel_header":{"channel_id":"paymentchannel", "type":2}},"data":{"config_update":{' '"channel_id":' '"paymentchannel",' '"isolated_data":' '{},' '"read_set":' '{' '"groups":' '{' '"Application":' '{' '"groups":' '{' '"Org1MSP":' '{' '"groups":' '{},' '"mod_policy":' '"",' '"policies":' '{' '"Admins":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Endorsement":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Readers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Writers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '}' '},' '"values":' '{' '"MSP":' '{' '"mod_policy":' '"",' '"value":' null, '"version":' '"0"' '}' '},' '"version":' '"0"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '},' '"write_set":' '{' '"groups":' '{' '"Application":' '{' '"groups":' '{' '"Org1MSP":' '{' '"groups":' '{},' '"mod_policy":' '"Admins",' '"policies":' '{' '"Admins":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Endorsement":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Readers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Writers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '}' '},' '"values":' '{' '"AnchorPeers":' '{' '"mod_policy":' '"Admins",' '"value":' '{' '"anchor_peers":' '[' '{' '"host":' '"peer0.org1.example.com",' '"port":' 7051 '}' ']' '},' '"version":' '"0"' '},' '"MSP":' '{' '"mod_policy":' '"",' '"value":' null, '"version":' '"0"' '}' '},' '"version":' '"1"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '}' '}}}}'
+++ configtxlator proto_encode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update_in_envelope.json --type common.Envelope --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org1MSPanchors.tx
+2026-10-14 11:12:13.962 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:12:13.982 +05 0002 INFO [channelCmd] update -> Successfully submitted channel update
+Anchor peer set for org 'Org1MSP' on channel 'paymentchannel'
+Setting anchor peer for org2...
+Using organization 2
+Fetching channel config for channel paymentchannel
+Using organization 2
+Fetching the most recent configuration block for the channel
+++ peer channel fetch config /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c paymentchannel --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+2026-10-14 11:12:14.066 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:12:14.072 +05 0002 INFO [cli.common] readBlock -> Received block: 1
+2026-10-14 11:12:14.072 +05 0003 INFO [channelCmd] fetch -> Retrieving last config block: 1
+2026-10-14 11:12:14.074 +05 0004 INFO [cli.common] readBlock -> Received block: 1
+Decoding config block to JSON and isolating config to /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org2MSPconfig.json
+++ configtxlator proto_decode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.pb --type common.Block --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.json
+++ jq '.data.data[0].payload.data.config' /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_block.json
+++ res=0
+Generating anchor peer update transaction for Org2 on channel paymentchannel
+++ jq '.channel_group.groups.Application.groups.Org2MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org2.example.com","port": 9051}]},"version": "0"}}' /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org2MSPconfig.json
+++ res=0
+++ configtxlator proto_encode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org2MSPconfig.json --type common.Config --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/original_config.pb
+++ configtxlator proto_encode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org2MSPmodified_config.json --type common.Config --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/modified_config.pb
+++ configtxlator compute_update --channel_id paymentchannel --original /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/original_config.pb --updated /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/modified_config.pb --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.pb
+++ configtxlator proto_decode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.pb --type common.ConfigUpdate --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.json
+++ jq .
++++ cat /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update.json
+++ echo '{"payload":{"header":{"channel_header":{"channel_id":"paymentchannel", "type":2}},"data":{"config_update":{' '"channel_id":' '"paymentchannel",' '"isolated_data":' '{},' '"read_set":' '{' '"groups":' '{' '"Application":' '{' '"groups":' '{' '"Org2MSP":' '{' '"groups":' '{},' '"mod_policy":' '"",' '"policies":' '{' '"Admins":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Endorsement":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Readers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Writers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '}' '},' '"values":' '{' '"MSP":' '{' '"mod_policy":' '"",' '"value":' null, '"version":' '"0"' '}' '},' '"version":' '"0"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '},' '"write_set":' '{' '"groups":' '{' '"Application":' '{' '"groups":' '{' '"Org2MSP":' '{' '"groups":' '{},' '"mod_policy":' '"Admins",' '"policies":' '{' '"Admins":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Endorsement":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Readers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '},' '"Writers":' '{' '"mod_policy":' '"",' '"policy":' null, '"version":' '"0"' '}' '},' '"values":' '{' '"AnchorPeers":' '{' '"mod_policy":' '"Admins",' '"value":' '{' '"anchor_peers":' '[' '{' '"host":' '"peer0.org2.example.com",' '"port":' 9051 '}' ']' '},' '"version":' '"0"' '},' '"MSP":' '{' '"mod_policy":' '"",' '"value":' null, '"version":' '"0"' '}' '},' '"version":' '"1"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '}' '},' '"mod_policy":' '"",' '"policies":' '{},' '"values":' '{},' '"version":' '"0"' '}' '}}}}'
+++ configtxlator proto_encode --input /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/config_update_in_envelope.json --type common.Envelope --output /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/channel-artifacts/Org2MSPanchors.tx
+2026-10-14 11:12:14.253 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+2026-10-14 11:12:14.270 +05 0002 INFO [channelCmd] update -> Successfully submitted channel update
+Anchor peer set for org 'Org2MSP' on channel 'paymentchannel'
+Channel 'paymentchannel' joined
+
+━━━━ Контейнеры сети ━━━━
+$ docker ps --format table {{.Names}}\t{{.Image}}\t{{.Ports}} --filter label=service
+NAMES                    IMAGE                               PORTS
+peer0.org1.example.com   hyperledger/fabric-peer:latest      0.0.0.0:7051->7051/tcp, [::]:7051->7051/tcp, 0.0.0.0:9444->9444/tcp, [::]:9444->9444/tcp
+peer0.org2.example.com   hyperledger/fabric-peer:latest      0.0.0.0:9051->9051/tcp, [::]:9051->9051/tcp, 0.0.0.0:9445->9445/tcp, [::]:9445->9445/tcp
+orderer.example.com      hyperledger/fabric-orderer:latest   0.0.0.0:7050->7050/tcp, [::]:7050->7050/tcp, 0.0.0.0:7053->7053/tcp, [::]:7053->7053/tcp, 0.0.0.0:9443->9443/tcp, [::]:9443->9443/tcp
+couchdb0                 couchdb:3.4.2                       0.0.0.0:5984->5984/tcp, [::]:5984->5984/tcp
+couchdb1                 couchdb:3.4.2                       0.0.0.0:7984->5984/tcp, [::]:7984->5984/tcp
+ca_org1                  hyperledger/fabric-ca:latest        0.0.0.0:7054->7054/tcp, [::]:7054->7054/tcp, 0.0.0.0:17054->17054/tcp, [::]:17054->17054/tcp
+ca_org2                  hyperledger/fabric-ca:latest        0.0.0.0:8054->8054/tcp, [::]:8054->8054/tcp, 0.0.0.0:18054->18054/tcp, [::]:18054->18054/tcp
+ca_orderer               hyperledger/fabric-ca:latest        0.0.0.0:9054->9054/tcp, [::]:9054->9054/tcp, 0.0.0.0:19054->19054/tcp, [::]:19054->19054/tcp
+NAMES                    IMAGE                               STATUS
+peer0.org1.example.com   hyperledger/fabric-peer:latest      Up 12 seconds
+peer0.org2.example.com   hyperledger/fabric-peer:latest      Up 13 seconds
+orderer.example.com      hyperledger/fabric-orderer:latest   Up 13 seconds
+couchdb0                 couchdb:3.4.2                       Up 14 seconds
+couchdb1                 couchdb:3.4.2                       Up 14 seconds
+ca_org1                  hyperledger/fabric-ca:latest        Up 23 seconds
+ca_org2                  hyperledger/fabric-ca:latest        Up 22 seconds
+ca_orderer               hyperledger/fabric-ca:latest        Up 22 seconds
+  ✔ контейнер peer0.org1.example.com запущен
+  ✔ контейнер peer0.org2.example.com запущен
+  ✔ контейнер orderer.example.com запущен
+  ✔ контейнер ca_org1 запущен
+  ✔ контейнер ca_org2 запущен
+  ✔ контейнер ca_orderer запущен
+  ✔ контейнер couchdb0 запущен
+  ✔ контейнер couchdb1 запущен
+
+━━━━ Канал paymentchannel с точки зрения каждой организации ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer channel list
+2026-10-14 11:12:15.535 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Channels peers has joined: 
+paymentchannel
+  ✔ Org1MSP: peer0.org1 присоединён к paymentchannel
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+$ peer channel list
+2026-10-14 11:12:15.708 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Channels peers has joined: 
+paymentchannel
+  ✔ Org2MSP: peer0.org2 присоединён к paymentchannel
+$ peer channel getinfo -c paymentchannel
+2026-10-14 11:12:15.858 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Blockchain info: {"height":3,"currentBlockHash":"bauIcmsIHvMbsRhZ4bdWu2clbPRa45hDDCU2cNZxxHU=","previousBlockHash":"L4ZP95lybvgaM6KVFwD9j0uvqeKRGVSfIuKsLkUH1QU="}
+
+━━━━ Ordering Service знает канал (Channel Participation API, osnadmin) ━━━━
+$ osnadmin channel list -o localhost:7053 --ca-file /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --client-cert /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt --client-key /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key
+Status: 200
+{
+	"systemChannel": null,
+	"channels": [
+		{
+			"name": "paymentchannel",
+			"url": "/participation/v1/channels/paymentchannel"
+		}
+	]
+}
+
+  ✔ orderer.example.com обслуживает канал paymentchannel
+
+━━━━ Соответствие ролей варианта 1 ━━━━
+  Org        MSP ID       Домен test-network      Роль
+  Org1       Org1MSP      org1.example.com             Банк-отправитель (Sender Bank)
+  Org2       Org2MSP      org2.example.com             Банк-получатель (Receiver Bank)
+  Orderer    OrdererMSP   example.com                  Ordering Service (Raft)
+
+  ══════ ИТОГ: 11 проверок пройдено, ошибок нет ✔ ══════

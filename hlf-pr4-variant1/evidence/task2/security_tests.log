@@ -1,0 +1,48 @@
+# command : ./tests/security/run_security_tests.sh 
+# date    : 2026-10-14 11:48:22 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=initiator1
+# log     : evidence/task2/security_tests.log
+
+━━━━ Подготовка (прогон 114822): PO-114822-A, PO-114822-B — с реквизитами, PO-114822-C — без реквизитов ━━━━
+  ✔ создан PO-114822-A (4676d15adb6bf5c7f57ca4cc68f92330f4cb1bfae42d160484fcf6a281b9345e)
+  ✔ создан PO-114822-B (5af378e54ab36fd8318f1b3029aa94f5b865c94c8b835d4272ac07e45072074c)
+  ✔ создан PO-114822-C (9133fccf1daa3d6f30637fff9d1cd99edf4580229ffc94b9752a26c0c49756d8)
+  ✔ реквизиты PO-114822-A записаны в collectionSettlementDetails (fe7c1454c779e3fb0ad22a2fd51409eefa86fc4055fb9fa731b8f035be457b79)
+  ✔ реквизиты PO-114822-B записаны в collectionSettlementDetails (b9e5d89a525e3935c2960ce54175fc23db0cc5ca3560681d3aaaac9bc60dfe3b)
+
+━━━━ Разграничение доступа к privateDetails (Org1 vs Org2) ━━━━
+  ✔ SEC-01 [SC01] initiator1 читает реквизиты на peer0.org1 → payerIBAN=KZ**************0001
+  ✔ SEC-02 [SC01] processor2 (Org2) читает реквизиты на peer0.org2 → ERR_UNAUTHORIZED: caller organisation is not allowed to perform this operation
+  ✔ SEC-03 [SC01] processor2 (Org2) читает реквизиты на peer0.org1 → ERR_UNAUTHORIZED: caller organisation is not allowed to perform this operation
+
+━━━━ Исправление уязвимости paymentvuln и полномочия ролей ━━━━
+  ✔ SEC-04 [SC01/SC03] повтор эксплойта: processor2 (Org2) Submit чужого поручения → ERR_UNAUTHORIZED: caller organisation is not allowed to perform this operation
+  ✔ SEC-05 [SC01/SC03] initiator1 сам авторизует своё поручение (нет роли approver, 4 глаза) → ERR_UNAUTHORIZED: caller role is not permitted for this operation
+  ✔ SEC-06 [SC01] norole1 (Org1 без роли) создаёт поручение → ERR_UNAUTHORIZED: caller role is not permitted for this operation
+
+━━━━ Переходы состояния и повторное исполнение ━━━━
+  ✔ approver1 (другой сотрудник Org1) авторизовал PO-114822-A — четыре глаза соблюдены (894b2d42fd65daaac997989e8b219ec1ab6f3cb374a6d7e2d15a22a0902bb879)
+  ✔ SEC-07 [SC03] Settle из SUBMITTED в обход ACCEPTED → ERR_INVALID_TRANSITION: transition SUBMITTED -> SETTLED is not allowed
+  ✔ processor2 принял PO-114822-A (078d83ac461f483c379cc33990edb6232b75715b1b26327dd80c40977ceb16c7)
+  ✔ processor2 исполнил PO-114822-A (488594d3cc545635cf1c159d2bf8f43fa344c56be66dd1ba03871560fea51e5f)
+  ✔ SEC-08 [SC03] повторный Settle уже исполненного поручения (replay) → ERR_INVALID_TRANSITION: transition SETTLED -> SETTLED is not allowed
+  ✔ SEC-09 [SC03] Create с существующим ID → ERR_ALREADY_EXISTS: payment order PO-114822-A already exists
+
+━━━━ Валидация входных данных ━━━━
+  ✔ SEC-10 [SC04/SC08] невалидные: сумма -1, 0, 2^63, 1e3; валюта XXX; IBAN с ошибкой контрольной суммы → amount=-1:✔ amount=0:✔ amount=9223372036854775808:✔ amount=1e3:✔ XXX:✔ IBAN mod-97:✔
+  ✔ SEC-11 [SC04/SC10] SetSettlementDetails: без transient / >4 КБ / короткая соль / лишнее поле → без transient:✔ >4КБ:✔ короткая соль:✔ лишнее поле:✔
+  ✔ SEC-12 [SC03] SetSettlementDetails после SUBMITTED/SETTLED (INV-9) → ERR_INVALID_TRANSITION: settlement details can only be set while status is CREATED
+
+━━━━ Сверка реквизитов банком-получателем без раскрытия (хэш + соль) ━━━━
+  ✔ SEC-13 [SC01] processor2 Verify: верный кандидат → true, неверный → false → верный: match=true; неверный: match=false
+
+━━━━ DoS и утечки ━━━━
+  ✔ SEC-14 [SC10] GetAllPaymentOrders pageSize=10000 → ERR_VALIDATION: pageSize must be in range 1..50
+  ✔ SEC-15 [SC01 (Info. Disclosure)] маркеры реквизитов: все 50 блоков канала, все базы CouchDB Org2, логи контейнеров → блоки=0 couchdb1=0 логи=0
+  ✔ SEC-16 [SC03] Submit поручения без реквизитов (INV-9) → ERR_VALIDATION: settlement details must be set before submit
+  ✔ SEC-17 [SC01 (Info. Disclosure)] SetSettlementDetails отправлен на peer0.org2 (не член коллекции) → ERR_UNAUTHORIZED: client organisation does not match the peer organisation
+
+━━━━ Итог security-тестов: 17 PASS / 0 FAIL → evidence/task2/security_tests.md ━━━━
+
+  ══════ ИТОГ: 25 проверок пройдено, ошибок нет ✔ ══════

@@ -1,0 +1,117 @@
+# command : ./scripts/07_static_analysis.sh 
+# date    : 2026-10-14 11:56:03 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task3/32_static_analysis_payment_v2.log
+
+━━━━ Unit-тесты (chaincode/payment-v2) — counterfeiter-моки + in-memory ledger ━━━━
+  --- PASS: TestHappyPathFullLifecycle (0.00s)
+  --- PASS: TestRejectAndCancelPaths (0.00s)
+  --- PASS: TestEveryInvalidTransitionIsRejected (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CREATED_Accept (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CREATED_Reject (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CREATED_Settle (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SUBMITTED_Submit (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SUBMITTED_Settle (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/ACCEPTED_Submit (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/ACCEPTED_Accept (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/ACCEPTED_Reject (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/ACCEPTED_Cancel (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SETTLED_Submit (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SETTLED_Accept (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SETTLED_Reject (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SETTLED_Settle (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/SETTLED_Cancel (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/REJECTED_Submit (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/REJECTED_Accept (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/REJECTED_Reject (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/REJECTED_Settle (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/REJECTED_Cancel (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CANCELLED_Submit (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CANCELLED_Accept (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CANCELLED_Reject (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CANCELLED_Settle (0.00s)
+      --- PASS: TestEveryInvalidTransitionIsRejected/CANCELLED_Cancel (0.00s)
+  --- PASS: TestForeignMSPIsUnauthorized (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Create_by_Org2 (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Submit_by_Org2 (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Cancel_by_Org2 (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Accept_by_Org1 (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Reject_by_Org1 (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Settle_by_Org1 (0.00s)
+      --- PASS: TestForeignMSPIsUnauthorized/Unknown_Org3 (0.00s)
+  --- PASS: TestCreateInputValidation (0.00s)
+      --- PASS: TestCreateInputValidation/selector_chars_id (0.00s)
+      --- PASS: TestCreateInputValidation/receiver_=_sender (0.00s)
+      --- PASS: TestCreateInputValidation/negative_amount (0.00s)
+      --- PASS: TestCreateInputValidation/exponent_amount (0.00s)
+      --- PASS: TestCreateInputValidation/lowercase_currency (0.00s)
+      --- PASS: TestCreateInputValidation/empty_reference (0.00s)
+      --- PASS: TestCreateInputValidation/newline (0.00s)
+      --- PASS: TestCreateInputValidation/invalid_utf8 (0.00s)
+      --- PASS: TestCreateInputValidation/empty_id (0.00s)
+      --- PASS: TestCreateInputValidation/short_id (0.00s)
+      --- PASS: TestCreateInputValidation/plus_sign_amount (0.00s)
+      --- PASS: TestCreateInputValidation/unknown_currency (0.00s)
+      --- PASS: TestCreateInputValidation/control_chars (0.00s)
+      --- PASS: TestCreateInputValidation/lowercase_id (0.00s)
+      --- PASS: TestCreateInputValidation/unknown_receiver (0.00s)
+      --- PASS: TestCreateInputValidation/zero_amount (0.00s)
+      --- PASS: TestCreateInputValidation/float_amount (0.00s)
+      --- PASS: TestCreateInputValidation/above_MaxAmount (0.00s)
+      --- PASS: TestCreateInputValidation/leading_zero_amount (0.00s)
+      --- PASS: TestCreateInputValidation/knp_4_digits (0.00s)
+      --- PASS: TestCreateInputValidation/long_reference (0.00s)
+      --- PASS: TestCreateInputValidation/spaces_id (0.00s)
+      --- PASS: TestCreateInputValidation/empty_amount (0.00s)
+      --- PASS: TestCreateInputValidation/spaces_amount (0.00s)
+      --- PASS: TestCreateInputValidation/int64_overflow (0.00s)
+      --- PASS: TestCreateInputValidation/knp_letters (0.00s)
+  --- PASS: TestDuplicateIDRejected (0.00s)
+  --- PASS: TestRejectReasonValidation (0.00s)
+  --- PASS: TestNotFoundAndExists (0.00s)
+  --- PASS: TestImmutableFieldsAcrossLifecycle (0.00s)
+  --- PASS: TestSettleExactlyOnce (0.00s)
+  --- PASS: TestGetAllPaymentOrdersPagination (0.00s)
+  --- PASS: TestInternalFailuresAreWrapped (0.00s)
+  --- PASS: TestThroughContractAPISchemaValidation (0.02s)
+  --- PASS: TestGoldenV1ObjectsAreReadUnchanged (0.00s)
+  --- PASS: TestLazyMigrationOnFirstWrite (0.00s)
+  --- PASS: TestReturnPaymentOrder (0.00s)
+  --- PASS: TestSetValueDate (0.00s)
+  --- PASS: TestGetPaymentOrdersByStatus (0.00s)
+  --- PASS: TestV2InternalErrors (0.00s)
+  PASS
+  coverage: 96.5% of statements
+  ok  	github.com/yaikenov/hlf-pr4-variant1/chaincode/payment/chaincode	0.048s	coverage: 96.5% of statements
+  ✔ unit-тесты: 76 PASS, 0 FAIL
+  ✔ покрытие пакета chaincode: 96.5% (порог ≥ 80%)
+
+━━━━ go vet ━━━━
+  ✔ go vet — 0 замечаний
+
+━━━━ staticcheck ━━━━
+  ✔ staticcheck — 0 замечаний
+
+━━━━ gosec (исключены сгенерированные mocks и тесты) ━━━━
+  ✔ gosec — 0 находок
+
+━━━━ govulncheck (уязвимости в достижимом коде зависимостей) ━━━━
+No vulnerabilities found.
+  ✔ govulncheck — уязвимостей в используемом коде нет
+
+━━━━ Детерминизм (SC09) ━━━━
+  ✔ time.Now (локальное время узла) — 0 находок
+  ✔ math/rand — 0 находок
+  ✔ crypto/rand (соль/nonce должен давать клиент) — 0 находок
+  ✔ горутины (go func / go call) — 0 находок
+  ✔ os.Getenv / переменные окружения — 0 находок
+  ✔ сетевые вызовы (net/http, net.Dial) — 0 находок
+  ✔ файловая система (os.ReadFile/os.Open) — 0 находок
+  ✔ InvokeChaincode (cross-chaincode, SC05/SC06) — 0 находок
+  ✔ глобальные изменяемые var — 0 (допустимы только regexp.MustCompile: неизменяемы после init)
+  ✔ итерация по map с выводом в state/ответ — 0 находок
+  ✔ ИТОГ: недетерминированных конструкций не найдено
+  ✔ check_determinism.sh — чисто
+
+  ══════ ИТОГ: 7 проверок пройдено, ошибок нет ✔ ══════

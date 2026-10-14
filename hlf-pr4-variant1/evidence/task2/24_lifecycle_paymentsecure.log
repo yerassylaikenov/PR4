@@ -1,0 +1,169 @@
+# command : scripts/lifecycle.sh -n paymentsecure -p chaincode/payment-secure -v 1.0 -s 1 -l paymentsecure_1.0 -c collections/collections_config.json -C paymentchannel
+# date    : 2026-10-14 11:38:21 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task2/24_lifecycle_paymentsecure.log
+
+━━━━ Lifecycle: paymentsecure v1.0, sequence 1, канал paymentchannel ━━━━
+  Endorsement Policy : AND('Org1MSP.peer','Org2MSP.peer')
+  Collections config : collections/collections_config.json
+
+━━━━ 1. go mod vendor (chaincode/payment-secure) ━━━━
+  ✔ зависимости завендорены (844 файлов .go)
+
+━━━━ 2. Package ━━━━
+$ peer lifecycle chaincode package /home/yeras/hlf-pr4-variant1/build/paymentsecure_1.0.tar.gz --path /home/yeras/hlf-pr4-variant1/chaincode/payment-secure --lang golang --label paymentsecure_1.0
+  ✔ пакет paymentsecure_1.0.tar.gz (2.7M)
+
+━━━━ 3. Package ID ━━━━
+  Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+  ✔ Package ID вычислен: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+
+━━━━ 4. Install на peer0.org1 и peer0.org2 ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode install /home/yeras/hlf-pr4-variant1/build/paymentsecure_1.0.tar.gz
+2026-10-14 11:39:05.969 +05 0001 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Installed remotely: response:{status:200 payload:"\nRpaymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985\x12\x11paymentsecure_1.0"}
+2026-10-14 11:39:05.973 +05 0002 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Chaincode code package identifier: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748, Label: payment_1.0
+Package ID: paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268, Label: paymentvuln_1.0
+Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985, Label: paymentsecure_1.0
+  ✔ peer0.org1: установлен paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+$ peer lifecycle chaincode install /home/yeras/hlf-pr4-variant1/build/paymentsecure_1.0.tar.gz
+2026-10-14 11:39:40.417 +05 0001 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Installed remotely: response:{status:200 payload:"\nRpaymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985\x12\x11paymentsecure_1.0"}
+2026-10-14 11:39:40.417 +05 0002 INFO [cli.lifecycle.chaincode] submitInstallProposal -> Chaincode code package identifier: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+$ peer lifecycle chaincode queryinstalled
+Installed chaincodes on peer:
+Package ID: payment_1.0:41e4157887f433f851ad7fcb43f449aff92a55a8a0f855676c5319d3e6769748, Label: payment_1.0
+Package ID: paymentvuln_1.0:18c91489d77e96883040d94bc826f5bc090b162184d8890177d5aee594931268, Label: paymentvuln_1.0
+Package ID: paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985, Label: paymentsecure_1.0
+  ✔ peer0.org2: установлен paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+
+━━━━ 5.1 approveformyorg — Org1MSP ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID paymentchannel --name paymentsecure --version 1.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --collections-config /home/yeras/hlf-pr4-variant1/collections/collections_config.json --package-id paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+2026-10-14 11:39:43.354 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [7210ef5d4d8971390c80dd8b0e2d61b4133aadd6d5a2747925792e43f94d4560] committed with status (VALID) at localhost:7051
+  ✔ Org1MSP утвердила paymentsecure v1.0 seq 1
+
+━━━━ 6.1 checkcommitreadiness после approve Org1 ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name paymentsecure --version 1.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --collections-config /home/yeras/hlf-pr4-variant1/collections/collections_config.json --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": false
+	}
+}
+  Org1MSP: true
+  Org2MSP: false
+
+━━━━ 5.2 approveformyorg — Org2MSP ━━━━
+# identity: MSP=Org2MSP user=Admin peer=localhost:9051
+$ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID paymentchannel --name paymentsecure --version 1.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --collections-config /home/yeras/hlf-pr4-variant1/collections/collections_config.json --package-id paymentsecure_1.0:55f18aa731b18cfac745804b7ba3a8666f0c914d1f3e4d59d5a34b0ac446e985
+2026-10-14 11:39:45.890 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [579d255e5cedf2d852370764c858dfae2122412a2c5fa0afd51e5de29e154d39] committed with status (VALID) at localhost:9051
+  ✔ Org2MSP утвердила paymentsecure v1.0 seq 1
+
+━━━━ 6.2 checkcommitreadiness после approve Org2 ━━━━
+$ peer lifecycle chaincode checkcommitreadiness --channelID paymentchannel --name paymentsecure --version 1.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --collections-config /home/yeras/hlf-pr4-variant1/collections/collections_config.json --output json
+{
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  Org1MSP: true
+  Org2MSP: true
+  ✔ обе организации утвердили определение (Org1MSP: true, Org2MSP: true)
+
+━━━━ 7. Commit (endorse обоими peers) ━━━━
+# identity: MSP=Org1MSP user=Admin peer=localhost:7051
+$ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID paymentchannel --name paymentsecure --version 1.0 --sequence 1 --signature-policy AND('Org1MSP.peer','Org2MSP.peer') --collections-config /home/yeras/hlf-pr4-variant1/collections/collections_config.json --peerAddresses localhost:7051 --tlsRootCertFiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem --peerAddresses localhost:9051 --tlsRootCertFiles /home/yeras/hlf-pr4-variant1/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+2026-10-14 11:39:48.592 +05 0001 INFO [chaincodeCmd] ClientWait -> txid [35269a836681df0a5a073f6cfec6ce06663cc9c34215fe4bd465047771b47686] committed with status (VALID) at localhost:9051
+2026-10-14 11:39:48.601 +05 0002 INFO [chaincodeCmd] ClientWait -> txid [35269a836681df0a5a073f6cfec6ce06663cc9c34215fe4bd465047771b47686] committed with status (VALID) at localhost:7051
+
+━━━━ 8. querycommitted — проверка зафиксированного определения ━━━━
+$ peer lifecycle chaincode querycommitted --channelID paymentchannel --name paymentsecure --output json
+{
+	"sequence": 1,
+	"version": "1.0",
+	"endorsement_plugin": "escc",
+	"validation_plugin": "vscc",
+	"validation_parameter": "CiwSDBIKCAISAggAEgIIARoNEgsKB09yZzFNU1AQAxoNEgsKB09yZzJNU1AQAw==",
+	"collections": {
+		"config": [
+			{
+				"Payload": {
+					"StaticCollectionConfig": {
+						"name": "collectionSettlementDetails",
+						"member_orgs_policy": {
+							"Payload": {
+								"SignaturePolicy": {
+									"rule": {
+										"Type": {
+											"NOutOf": {
+												"n": 1,
+												"rules": [
+													{
+														"Type": {
+															"SignedBy": 0
+														}
+													}
+												]
+											}
+										}
+									},
+									"identities": [
+										{
+											"principal": "CgdPcmcxTVNQ"
+										}
+									]
+								}
+							}
+						},
+						"maximum_peer_count": 1,
+						"member_only_read": true,
+						"member_only_write": true,
+						"endorsement_policy": {
+							"Type": {
+								"SignaturePolicy": {
+									"rule": {
+										"Type": {
+											"NOutOf": {
+												"n": 1,
+												"rules": [
+													{
+														"Type": {
+															"SignedBy": 0
+														}
+													}
+												]
+											}
+										}
+									},
+									"identities": [
+										{
+											"principal": "CgdPcmcxTVNQEAM="
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		]
+	},
+	"approvals": {
+		"Org1MSP": true,
+		"Org2MSP": true
+	}
+}
+  ✔ Version: 1.0
+  ✔ Sequence: 1
+  ✔ Approvals: Org1MSP=true, Org2MSP=true
+  Decoded endorsement policy: 2-out-of-2 of [Org1MSP,Org2MSP] role=PEER
+  ✔ Endorsement Policy = AND('Org1MSP.peer','Org2MSP.peer') (2 из 2, роль PEER)
+  ✘ коллекция не найдена в querycommitted
+
+  ══════ ИТОГ: 12 ✔ / 1 ✘ ══════

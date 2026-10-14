@@ -1,0 +1,143 @@
+# command : ./scripts/40_restore_main.sh 
+# date    : 2026-10-14 12:44:54 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=n/a user=n/a
+# log     : evidence/task3/40_restore_main.log
+
+━━━━ 1. Остановка стенда SmartBFT (если запущен) ━━━━
+$ ./network.sh down
+Using docker and docker-compose
+Stopping network
+ Container orderer3.example.com Stopping 
+ Container peer0.org1.example.com Stopping 
+ Container orderer2.example.com Stopping 
+ Container orderer.example.com Stopping 
+ Container peer0.org2.example.com Stopping 
+ Container ca_org1 Stopping 
+ Container ca_orderer Stopping 
+ Container ca_org2 Stopping 
+ Container orderer4.example.com Stopping 
+ Container orderer3.example.com Stopped 
+ Container orderer3.example.com Removing 
+ Container orderer3.example.com Removed 
+ Container orderer.example.com Stopped 
+ Container orderer.example.com Removing 
+ Container orderer.example.com Removed 
+ Container orderer4.example.com Stopped 
+ Container orderer4.example.com Removing 
+ Container orderer4.example.com Removed 
+ Container orderer2.example.com Stopped 
+ Container orderer2.example.com Removing 
+ Container orderer2.example.com Removed 
+ Container peer0.org2.example.com Stopped 
+ Container peer0.org2.example.com Removing 
+ Container peer0.org2.example.com Removed 
+ Container couchdb1 Stopping 
+ Container peer0.org1.example.com Stopped 
+ Container peer0.org1.example.com Removing 
+ Container peer0.org1.example.com Removed 
+ Container couchdb0 Stopping 
+ Container ca_orderer Stopped 
+ Container ca_orderer Removing 
+ Container ca_orderer Removed 
+ Container ca_org1 Stopped 
+ Container ca_org1 Removing 
+ Container ca_org1 Removed 
+ Container ca_org2 Stopped 
+ Container ca_org2 Removing 
+ Container ca_org2 Removed 
+ Container couchdb1 Stopped 
+ Container couchdb1 Removing 
+ Container couchdb1 Removed 
+ Container couchdb0 Stopped 
+ Container couchdb0 Removing 
+ Container couchdb0 Removed 
+ Volume compose_orderer.example.com Removing 
+ Volume compose_orderer2.example.com Removing 
+ Volume compose_orderer3.example.com Removing 
+ Volume compose_orderer4.example.com Removing 
+ Volume compose_peer0.org2.example.com Removing 
+ Volume compose_peer0.org1.example.com Removing 
+ Network fabric_test Removing 
+ Volume compose_orderer.example.com Removed 
+ Volume compose_orderer2.example.com Removed 
+ Volume compose_orderer3.example.com Removed 
+ Volume compose_orderer4.example.com Removed 
+ Volume compose_peer0.org1.example.com Removed 
+ Volume compose_peer0.org2.example.com Removed 
+ Network fabric_test Removed 
+Error response from daemon: get docker_orderer.example.com: no such volume
+Error response from daemon: get docker_peer0.org1.example.com: no such volume
+Error response from daemon: get docker_peer0.org2.example.com: no such volume
+Removing remaining containers
+Removing generated chaincode docker images
+Untagged: dev-peer0.org2.example.com-payment_2.0-14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c-85e56db1b70bc6db0c48aa49aec63934d5e5cad77808cdb56363a40a8478cde6:latest
+Deleted: sha256:f1af071c508823866dc3205d2076a706c7fb3204beb90801f78cd60c65ba30d4
+Untagged: dev-peer0.org1.example.com-payment_2.0-14d12cad119b7bfa2cc2cca4fda861db6321eb84ffd356ca863e32c682247c6c-ce3bec96f75d23b65c9340ac1c4dd4cc01336aeb02fa8e197322c9ddc2ce2ab9:latest
+Deleted: sha256:e66c0cdc48a33f2fbe5b6619bcf2ac46eca225097cbc000d5cf3ff7a425c55f4
+
+━━━━ 2. Проверка целостности бэкапа 20261014-121904 (sha256 зашифрованных файлов) ━━━━
+  ./channel-artifacts.tgz.enc: OK
+  ./couchdb0.tgz.enc: OK
+  ./couchdb1.tgz.enc: OK
+  ./orderer.example.com.tgz.enc: OK
+  ./organizations.tgz.enc: OK
+  ./peer0.org1.example.com.tgz.enc: OK
+  ./peer0.org2.example.com.tgz.enc: OK
+  ✔ контрольные суммы бэкапа совпадают
+
+━━━━ 3. MSP / TLS / Fabric CA и channel-artifacts ━━━━
+  ✔ organizations/ восстановлен (64 сертификатов; ключи не выводятся)
+
+━━━━ 4. Fabric CA ━━━━
+ Container ca_org2 Started 
+ Container ca_orderer Started 
+ Container ca_org1 Started 
+  ✔ ca_org1, ca_org2, ca_orderer запущены с восстановленными БД
+
+━━━━ 5. Создание контейнеров без запуска (docker compose create) и восстановление данных ━━━━
+ Container orderer.example.com Created 
+ Container peer0.org1.example.com Created 
+ Container peer0.org2.example.com Created 
+  ✔ couchdb0 → восстановлен
+  ✔ couchdb1 → восстановлен
+  ✔ orderer.example.com → восстановлен
+  ✔ peer0.org1.example.com → восстановлен
+  ✔ peer0.org2.example.com → восстановлен
+
+━━━━ 6. Запуск: CouchDB → orderer → peers ━━━━
+$ docker start couchdb0 couchdb1
+couchdb0
+couchdb1
+$ docker start orderer.example.com
+orderer.example.com
+$ docker start peer0.org1.example.com peer0.org2.example.com
+peer0.org1.example.com
+peer0.org2.example.com
+
+━━━━ 7. Проверка восстановления ━━━━
+$ peer channel getinfo -c paymentchannel
+2026-10-14 12:45:38.431 +05 0001 INFO [channelCmd] InitCmdFactory -> Endorser and orderer connections initialized
+Blockchain info: {"height":64,"currentBlockHash":"pvthqFOPl0vrLbxyVbdhyfPTTARJGfZmGXeHcT+HKrA=","previousBlockHash":"jQiQQ/426cv+nqkQjrSzkQNz3bpf9UMXD3BA5lix8Rc="}
+  в момент бэкапа: 
+  ➜ сравнение: сейчас {"height":64,"currentBlockHash":"pvthqFOPl0vrLbxyVbdhyfPTTARJGfZmGXeHcT+HKrA=","previousBlockHash":"jQiQQ/426cv+nqkQjrSzkQNz3bpf9UMXD3BA5lix8Rc="}
+  ✔ peer0.org2 на той же высоте
+  ✔ payment: Version 2.0, Sequence 2 (определение восстановлено)
+  ✔ PO-0001 = RETURNED (состояние после Задания 3.6), контейнеры chaincode пересобраны
+  ✔ private data Org1 доступны (ReadSettlementDetails PO-S001; значения не выводятся)
+  ✔ история PO-0001 содержит исходный TxID T4 6d535b17… — это тот же ledger
+
+  ══════ ИТОГ: 13 проверок пройдено, ошибок нет ✔ ══════
+# --- продолжение (resumed run) ---
+# command : ./scripts/40b_verify_restore.sh 
+# date    : 2026-10-14 12:48:59 +05
+# host    : Linux 6.6.87.2-microsoft-standard-WSL2 (WSL2)
+# identity: MSP=Org1MSP user=Admin
+# log     : evidence/task3/40_restore_main.log
+
+━━━━ 7b. Сверка с моментом бэкапа (повторная проверка) ━━━━
+  в момент бэкапа: height=64 currentBlockHash=pvthqFOPl0vrLbxyVbdhyfPTTARJGfZmGXeHcT+HKrA=
+  сейчас         : height=64 currentBlockHash=pvthqFOPl0vrLbxyVbdhyfPTTARJGfZmGXeHcT+HKrA=
+  ✔ высота и currentBlockHash совпадают с моментом бэкапа — ledger восстановлен без потерь
+
+  ══════ ИТОГ: 1 проверок пройдено, ошибок нет ✔ ══════
